@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 
 @Data
-@RedisHash(value = "test_hash", timeToLive = 300)
+@RedisHash(value = "test_hash", timeToLive = 300) // redis key & value 저장 메모리 기반 DB 새션을 저장하는 기술
 public class RedisItem implements Serializable {
     @Id
     private String key;
@@ -16,3 +16,4 @@ public class RedisItem implements Serializable {
     private String productNm;
 
 }
+
