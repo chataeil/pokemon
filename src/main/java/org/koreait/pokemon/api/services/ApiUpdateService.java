@@ -75,6 +75,7 @@ public class ApiUpdateService {
 
             pokemons.add(pokemon);
 //            asdadsad
+            //asdasd
         }
         /* 상세 정보 처리 E */
 
