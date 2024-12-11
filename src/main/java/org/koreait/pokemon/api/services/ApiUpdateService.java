@@ -74,6 +74,7 @@ public class ApiUpdateService {
             pokemon.setFlavorText(flavorText);
 
             pokemons.add(pokemon);
+//            asdadsad
         }
         /* 상세 정보 처리 E */
 
