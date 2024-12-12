@@ -94,13 +94,13 @@ public class PokemonInfoService {
     private void addInfo(Pokemon item) {
         // abilities
         String abilities = item.getAbilities();
-        if (StringUtils.hasText(abilities)){
+        if (StringUtils.hasText(abilities)) {
             item.set_abilities(Arrays.stream(abilities.split("\\|\\|")).toList());
         }
 
-        //types
+        // types
         String types = item.getTypes();
-        if (StringUtils.hasText(types)){
+        if (StringUtils.hasText(types)) {
             item.set_types(Arrays.stream(types.split("\\|\\|")).toList());
         }
     }

@@ -38,8 +38,9 @@ public class TrainService {
     @Scheduled(cron="0 0 1 * * *") // 새벽 1시 마다 훈련
     public void process(){
         try {
-            ProcessBuilder builder = new ProcessBuilder(runPath, scriptPath + "train.py", dataUrl/*전체 데이터*/ + "mode=ALL", dataUrl/*하루치 데이터*/);
+            ProcessBuilder builder = new ProcessBuilder(runPath, scriptPath + "train.py", dataUrl/*전체 데이터*/ + "?mode=ALL", dataUrl/*하루치 데이터*/);
             Process process = builder.start();
+            process.inputReader().lines().forEach(System.out::println);
             int exitCode = process.waitFor();
 
         }catch (Exception e){

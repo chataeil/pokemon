@@ -43,12 +43,12 @@ public class PythonRunTest {
     @Test
     void test3() {
 
-        trainService.process();
+        //trainService.process();
 
-        int[] item = {123151481, 88790998, 1140196, 94127238, 16784415, 138504672, -157161094, -65513703, 99961796, -80484811};
+       int[] item = {123151481, 88790998, 1140196, 94127238, 16784415, 138504672, -157161094, -65513703, 99961796, -80484811};
         List<int[]> items = List.of(item);
 
-        int[] predictions = service.predict(items);
-        System.out.println(Arrays.toString(predictions));
+       int[] predictions = service.predict(items);
+       System.out.println(Arrays.toString(predictions));
     }
 }
