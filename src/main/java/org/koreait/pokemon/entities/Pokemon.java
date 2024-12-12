@@ -23,9 +23,11 @@ public class Pokemon extends BaseEntity {
 
     @Lob
     private String flavorText; // 설명
-
     private String types;   // 타입1||타입2||타입3
     private String abilities; // 능력1||능력2||능력3
+
+    @Column(length = 100)
+    private String genus;
 
     @Transient
     private List<String> _types;
