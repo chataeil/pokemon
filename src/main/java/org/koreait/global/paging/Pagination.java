@@ -54,7 +54,7 @@ public class Pagination {
         // 구간 번호 - 0, 1, 2
         int rangeCnt = (page - 1) / ranges;
         int firstRangePage = rangeCnt * ranges + 1; // 현재 구간의 시작 페이지 번호
-        int lastRangePage = firstRangePage + 5 - 1; // 현재 구간의 마지막 페이지 번호
+        int lastRangePage = firstRangePage + ranges - 1; // 현재 구간의 마지막 페이지 번호
         lastRangePage = Math.min(lastRangePage, totalPages);
 
         int prevRangeLastPage = 0, nextRangeFirstPage = 0; // 이전 구간 시작 페이지 번호, 다음 구간 시작 페이지 번호
