@@ -1,6 +1,7 @@
 package org.koreait.pokemon.services;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.koreait.global.libs.Utils;
@@ -20,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.data.domain.Sort.Order.asc;
 
@@ -32,6 +35,7 @@ public class PokemonInfoService {
     private final PokemonRepository pokemonRepository;
     private final HttpServletRequest request;
     private final Utils utils;
+    private final JPAQueryFactory queryFactory;
 
     /**
      * 포켓몬 목록 조회
@@ -81,7 +85,7 @@ public class PokemonInfoService {
         Pokemon item = pokemonRepository.findById(seq).orElseThrow(PokemonNotFoundException::new);
 
         // 추가 정보 처리
-        addInfo(item);
+        addInfo(item, true);
 
         return item;
     }
@@ -103,5 +107,42 @@ public class PokemonInfoService {
         if (StringUtils.hasText(types)) {
             item.set_types(Arrays.stream(types.split("\\|\\|")).toList());
         }
+    }
+    private void addInfo(Pokemon item, boolean isView){
+        addInfo(item);
+        if (!isView) return;
+
+        long seq = item.getSeq();
+        long lastSeq = getLastSeq();
+
+        // 이전 포켓몬 정보 - prevItem
+        long prevSeq = seq - 1L;
+        prevSeq = prevSeq < 1L ? lastSeq : prevSeq;
+
+
+        // 다음 포켓몬 정보 - nextItem
+        long nextSeq = seq + 1L;
+        nextSeq = nextSeq > lastSeq ? 1L : nextSeq;
+
+        QPokemon pokemon = QPokemon.pokemon;
+        List<Pokemon> items = (List<Pokemon>) pokemonRepository.findAll(pokemon.seq.in(prevSeq, nextSeq));
+
+        Map<String, Object> prevItem = new HashMap<>();
+        Map<String, Object> nextItem = new HashMap<>();
+        for (int i =0; i < items.size(); i++){
+            Pokemon _item = items.get(i);
+            Map<String, Object> data =_item.getSeq().longValue() == prevSeq ? prevItem : nextItem;
+            data.put("seq", _item.getSeq());
+            data.put("name", _item.getName());
+            data.put("nameEn", _item.getNameEn());
+        }
+        item.setPrevItem(prevItem);
+        item.setNextItem(nextItem);
+    }
+    private Long getLastSeq(){
+        QPokemon pokemon = QPokemon.pokemon;
+        return queryFactory.select(pokemon.seq.max())
+                .from(pokemon)
+                .fetchFirst();
     }
 }
