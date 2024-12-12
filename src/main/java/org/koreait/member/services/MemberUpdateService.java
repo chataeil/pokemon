@@ -31,6 +31,7 @@ public class MemberUpdateService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
     private final MemberUtil memberUtil;
+    private final MemberInfoService infoService;
 
     /**
      * 커맨드 객체의 타입에 따라서 RequestJoin이면 회원 가입 처리
@@ -114,7 +115,7 @@ public class MemberUpdateService {
      */
     private void save(Member member, List<Authorities> authorities) {
 
-        if (authorities != null) {
+
             memberRepository.saveAndFlush(member);
 
             // 회원 권한 업데이트 처리 S
@@ -127,6 +128,7 @@ public class MemberUpdateService {
                 List<Authorities> items = (List<Authorities>) authoritiesRepository.findAll(qAuthorities.member.eq(member));
                 if (items != null) {
                     authoritiesRepository.deleteAll(items);
+                    authoritiesRepository.flush();
                 }
                 ;
 
@@ -134,6 +136,10 @@ public class MemberUpdateService {
             }
 
             // 회원 권한 업데이트 처리 E
-        }
+
+            // 로그인 회원 정보 업데이트
+            infoService.addInfo(member);
+            memberUtil.setMember(member);
+
     }
 }
