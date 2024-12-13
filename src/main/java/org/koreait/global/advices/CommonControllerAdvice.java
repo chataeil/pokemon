@@ -18,11 +18,11 @@ import java.util.Map;
 
 @ControllerAdvice(annotations = ApplyErrorPage.class)
 @RequiredArgsConstructor
-public class CommonControllerAdvice {
+public class CommonControllerAdvice { // 공통 처리
     private final Utils utils;
 
     @ExceptionHandler(Exception.class)
-    public ModelAndView errorHandler(Exception e, HttpServletRequest request){
+    public ModelAndView errorHandler(Exception e, HttpServletRequest request){ // 에러 처리에 대한 공통처리.
         Map<String, Object> data = new HashMap<>();
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR; // 기본 응답 코드 500
@@ -35,7 +35,7 @@ public class CommonControllerAdvice {
         data.put("exception", e);
 
         if (e instanceof CommonException commonException){
-            status = commonException.getStatus();
+            status = commonException.getStatus(); // 응답 코드 정확하게 하려고.
            message = commonException.isErrorCode() ? utils.getMessage(message) : message;
 
             StringBuffer sb = new StringBuffer(2048);

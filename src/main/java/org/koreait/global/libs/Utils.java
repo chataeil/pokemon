@@ -53,7 +53,7 @@ public class Utils {
     public String getMessage(String code) {
         Locale lo = request.getLocale(); // 사용자 요청 헤더(Accept-Language)
 
-        return messageSource.getMessage(code, null, lo);
+        return messageSource.getMessage(code, null, lo); // 코드 상에서도 메세지 형태로 사용 하기 때문.
     }
 
     public List<String> getMessages(String[] codes) {

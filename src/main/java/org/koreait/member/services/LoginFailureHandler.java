@@ -23,7 +23,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
         HttpSession session = request.getSession();
         RequestLogin form = (RequestLogin) Objects.requireNonNullElse(session.getAttribute("requestLogin"), new RequestLogin());
-        form.setErrorCodes(null);
+        form.setErrorCodes(null); // 세션 범위이기 때문에 데이터가 유지됨. 에러코드는 새로 검증해야 해서 초기화 ㅅ ㅣ킴.
 
 
 
@@ -34,13 +34,16 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
         form.setEmail(email);
         form.setPassword(password);
+
             // 아이디 또는 비밀번호를 입력하지 않은 경우, 아이디로 조회 X, 비번이 일치하지 않는 경우
-            if (exception instanceof BadCredentialsException){
+            if (exception instanceof BadCredentialsException) {
                 List<String> errorCodes = Objects.requireNonNullElse(form.getErrorCodes(), new
                         ArrayList<>());
+
                 if (StringUtils.hasText(email)){
                     errorCodes.add("MotBlank_email");
                 }
+
                 if (!StringUtils.hasText(password)){
                     errorCodes.add("NotBlank_password");
                 }
@@ -51,6 +54,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
                 form.setErrorCodes(errorCodes);
             } else if (exception instanceof CredentialsExpiredException) { // 비밀번호가 만료된 경우
+
                     redirectUrl = request.getContextPath()+"/member/password/change";
             } else if (exception instanceof DisabledException) { //탈퇴한 회원
                 form.setErrorCodes(List.of("Failure.disabled.login"));

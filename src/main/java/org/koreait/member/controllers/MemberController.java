@@ -27,7 +27,7 @@ import java.util.List;
 @ApplyErrorPage
 @RequestMapping("/member")
 @RequiredArgsConstructor
-@SessionAttributes({"requestAgree", "requestLogin"})
+@SessionAttributes({"requestAgree", "requestLogin"}) // 데이터 유지
 public class MemberController {
 
     private final Utils utils;

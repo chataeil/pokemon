@@ -24,7 +24,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
-        /* 인증 설정 S - 로그인, 로그아웃 */
+        /* 인증 설정 S - 로그인, 로그아웃 */ // 람다를 사용하는 이유는 DSL 도메인 특화 역할 영역별로 특정할 수 있기 때문.
         http.formLogin(c -> {
             c.loginPage("/member/login") // 로그인 양식을 처리할 주소
                     .usernameParameter("email")
@@ -55,7 +55,7 @@ public class SecurityConfig {
          */
 
         http.authorizeHttpRequests(c->{
-            c.requestMatchers("/mypage/**").authenticated()
+            c.requestMatchers("/mypage/**").authenticated() // 인증한 회원
                     .requestMatchers("/member/login", "/member/join", "member/agree"). anonymous() // 미인증 회원
                     .requestMatchers("/admin/**").hasAnyAuthority("MANAGER", "ADMIN") // 관리자 페이지는 MANAGER, ADMIN 권한
                     .anyRequest().permitAll(); // 나머지 페이지는 모두 접근 가능
@@ -65,7 +65,7 @@ public class SecurityConfig {
                    .accessDeniedHandler(new MemberAccessDeniedHandler()); // 로그인 이후 인가 실패
         });
         /* 인가 설정 E */
-        return http.build(); // 설정 무력화
+        return http.build(); // 설정 객체를 빌드로 만들어서 내보내는 역할.
     }
 
     @Bean

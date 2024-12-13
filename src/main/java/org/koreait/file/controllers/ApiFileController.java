@@ -24,7 +24,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.List;
 
-@Tag(name="파일 API", description = "파일 업로드, 조회, 다운로드, 삭제 기능 제공합니다.")
+@Tag(name="파일 API", description = "파일 업로드, 조회, 다운로드, 삭제 기능 제공합니다.") // 같은 태그끼리 엮는거
 @RestController
 @RequestMapping("/api/file")
 @RequiredArgsConstructor
@@ -53,7 +53,7 @@ public class ApiFileController {
     @Parameters({
             @Parameter(name="gid", description = "파일 그룹 ID", required = true),
             @Parameter(name="location", description = "파일 그룹 내에서 위치 코드"),
-            @Parameter(name="file", description = "업로드 파일, 복수개 전송 가능", required = true)
+            @Parameter(name="file", description = "업로드 파일, 복수개 전송 가능", required = true) // 요청 명세 파라미터로 작성
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/upload")

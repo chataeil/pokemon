@@ -40,7 +40,7 @@ public class MemberInfo implements UserDetails {
         return true;
     }
 
-    @Override
+    @Override 
     public boolean isAccountNonLocked() {
         return true;
     }
@@ -55,5 +55,5 @@ public class MemberInfo implements UserDetails {
     @Override
     public boolean isEnabled() { // 회원 탈퇴 여부
         return member.getDeletedAt() == null;
-    }
+    } // 회원 탈퇴 여부
 }

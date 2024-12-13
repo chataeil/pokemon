@@ -16,8 +16,8 @@ public class MemberAuthenticationExceptionHandler implements AuthenticationEntry
          * 관리자 : 응답 코드 401
          */
         String uri = request.getRequestURI(); // 요청 주소
-        if (uri.contains("/mypage")){ // 마이페이지
-            response.sendRedirect(request.getContextPath() + "/member/login?redirectUrl=/mypage");
+        if (uri.contains("/mypage")){ // 마이페이지가 포함 되 어 있다.
+            response.sendRedirect(request.getContextPath() + "/member/login?redirectUrl=/mypage"); // 현장에서 많이 사용하는 패턴
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED); // 그외 401
         }
