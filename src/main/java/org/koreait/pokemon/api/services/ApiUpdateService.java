@@ -29,7 +29,7 @@ public class ApiUpdateService {
     public void update(int page) {
         int limit = 100;
         //int limit = 3;
-        int offset = (page - 1) * limit; // 시작 레코드 번호, 0, 100, ..
+        int offset = (page - 1) * limit; // 시작 레코드 번호, 0, 100, ...
         String url = String.format("https://pokeapi.co/api/v2/pokemon?offset=%d&limit=%d", offset, limit);
         ApiResponse response = tpl.getForObject(URI.create(url), ApiResponse.class);
         List<UrlItem> items = response.getResults();

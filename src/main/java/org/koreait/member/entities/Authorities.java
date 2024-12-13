@@ -19,6 +19,4 @@ public class Authorities implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(length = 15)
     private Authority authority;
-
-
 }

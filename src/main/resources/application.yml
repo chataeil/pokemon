@@ -37,7 +37,7 @@ spring:
     multipart:
       maxFileSize: 20MB
       maxRequestSize: 60MB
-      fileSizeThreshold: 30MB
+      fileSizeThreshold: 30MB #메모리 쪽 용량 30MB까지는 메모리로 임시로 기억하고 넘어가면 ssd나 hd로 보냄.
 
 # 로거 설정
 logging:

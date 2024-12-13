@@ -34,13 +34,14 @@ public class FileDeleteService {
         // 1. DB에서 정보를 제거
         infoRepository.delete(item);
         infoRepository.flush();
+        
         // 2. 파일이 서버에 존재하면 파일도 삭제한다.
         File file = new File(filePath);
         if (file.exists() && file.isFile()){
             file.delete();
         }
 
-        // 3. 삭제된 파일 정보를 반환
+        // 3. 삭제된 파일 정보를 반환 열린 기능
         return item;
     }
 
@@ -53,5 +54,5 @@ public class FileDeleteService {
 
     public List<FileInfo> deletes(String gid){
         return deletes(gid, null);
-    }
+    } // gid만 가지고도 지울 수 있게 오버로딩
 }

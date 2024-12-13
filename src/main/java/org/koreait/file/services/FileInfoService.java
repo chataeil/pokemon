@@ -34,7 +34,7 @@ public class FileInfoService  {
     public FileInfo get(Long seq) {
         FileInfo item = infoRepository.findById(seq).orElseThrow(FileNotFoundException::new);
 
-        addInfo(item); // 추가 정보 처리
+        addInfo(item); // 추가 정보 처리 // 목록이든 상세든 처리가 동일하기 때문에 각각 처리하기 보다는 한번에 처리하고 추가하는게 강사님 스타일 열린 기능
 
         return item;
     }

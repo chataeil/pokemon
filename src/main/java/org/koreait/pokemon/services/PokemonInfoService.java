@@ -59,7 +59,7 @@ public class PokemonInfoService {
                     .concat(pokemon.flavorText).contains(skey));
         }
         /* 검색 처리 E */
-
+        // 반환값은 무적권 page
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(asc("seq")));
 
         Page<Pokemon> data = pokemonRepository.findAll(andBuilder, pageable);

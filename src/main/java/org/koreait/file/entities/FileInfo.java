@@ -16,7 +16,7 @@ import java.io.Serializable;
 })
 public class FileInfo extends BaseMemberEntity implements Serializable {
     @Id @GeneratedValue
-    private Long seq; // 파일 등록 번호. //이거 하나로 다운받게 만들거에요.
+    private Long seq; // 파일 등록 번호.
 
     @Column(length = 45, nullable = false)
     private String gid; // 파일 그룹
@@ -37,7 +37,7 @@ public class FileInfo extends BaseMemberEntity implements Serializable {
     private String fileUrl; // URL로 파일 접근할 수 있는 주소 - 2차 가공
 
     @Transient
-    private String filePath; //파일이 서버에 있는 경로
+    private String filePath; //파일이 서버에 있는 경로 ? ~
 
     @Transient
     private String thumbUrl; // 썸네일 기본 URL
@@ -47,6 +47,6 @@ public class FileInfo extends BaseMemberEntity implements Serializable {
     // 이미지 형식 여부
     public boolean isImage(){
 
-        return StringUtils.hasText(contentType) && contentType.contains("image/");
+        return StringUtils.hasText(contentType) && contentType.contains("image/"); // 이미지만 올려야하기 때문에 확인 하는 용도.
     }
 }

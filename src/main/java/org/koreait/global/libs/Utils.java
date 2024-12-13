@@ -42,6 +42,7 @@ public class Utils {
         String prefix = isMobile() ? "mobile" : "front";
 
         return String.format("%s/%s", prefix, path);
+
     }
 
     /**
@@ -75,7 +76,7 @@ public class Utils {
      * @return
      */
     public Map<String, List<String>> getErrorMessages(Errors errors) {
-        ResourceBundleMessageSource ms = (ResourceBundleMessageSource) messageSource;
+        ResourceBundleMessageSource ms = (ResourceBundleMessageSource) messageSource; // 싱글톤 형태의 객체이기 때문에 변형 시키면 다른곳도 변형 됨, 그래서 변형 후 다시 원래대로 돌려야함.
         ms.setUseCodeAsDefaultMessage(false);
         try {
             // 필드별 에러코드 - getFieldErrors()
@@ -87,7 +88,7 @@ public class Utils {
             // 글로벌 에러코드 - getGlobalErrors()
             List<String> gMessages = errors.getGlobalErrors()
                     .stream()
-                    .flatMap(o -> getMessages(o.getCodes()).stream())
+                    .flatMap(o -> getMessages(o.getCodes()).stream()) // field와 messages를 코드로 가져왔다.
                     .toList();
             // 글로벌 에러코드 필드 - global
             if (!gMessages.isEmpty()) {

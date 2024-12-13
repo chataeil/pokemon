@@ -65,7 +65,7 @@ public class ThumbnailService {
             } else {
                 thumbPath = null;
             }
-        }catch (Exception e){}
+        } catch (Exception e){}
 
         return thumbPath;
     }

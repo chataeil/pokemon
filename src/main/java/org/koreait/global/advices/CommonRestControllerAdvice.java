@@ -35,13 +35,13 @@ public class CommonRestControllerAdvice  {
                         : message;
             }
         }
-        JSONData data = new JSONData();
+        JSONData data = new JSONData(); // 예측 가능한 응답을 하기 위해.
         data.setSuccess(false);
         data.setStatus(status);
         data.setMessage(message);
 
         e.printStackTrace();
 
-        return ResponseEntity.status(status).body(data);
+        return ResponseEntity.status(status).body(data); // 응답데이터와 JSON 데이터의 바디 데이터를 가공해서 보냄.
     }
 }

@@ -58,8 +58,8 @@ public class ApiFileController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/upload")
     public JSONData upload(@RequestPart("file") MultipartFile[] files, @Valid RequestUpload form, Errors errors) {
-        if (errors.hasErrors()) {
-            throw new BadRequestException(utils.getErrorMessages(errors));
+        if (errors.hasErrors()) { //errors를 넣기 위해 작성된 메서드 .
+            throw new                                                                                                                                  BadRequestException(utils.getErrorMessages(errors));
         }
 
         form.setFiles(files);
@@ -83,7 +83,7 @@ public class ApiFileController {
         return data;
     }
 
-    // 파일 다운로드
+    // 파일 다운로드 중요한건 응답 헤더에 대한 통신 content-dispor뭐시기가 있어야댐.(추가 설명 필요)
     @GetMapping("/download/{seq}")
     public void download(@PathVariable("seq") Long seq) {
         DownloadService.process(seq);
@@ -131,7 +131,7 @@ public class ApiFileController {
     }
     @GetMapping("/thumb")
     public void thumb(RequestThumb form, HttpServletResponse response){
-        String path = thumbnailService.create(form);
+        String path = thumbnailService.create(form); // 핵심 기능
         if (!StringUtils.hasText(path)){
             return;
         }

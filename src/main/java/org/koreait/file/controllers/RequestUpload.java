@@ -14,6 +14,6 @@ public class RequestUpload {
     private boolean imageOnly; // 이미지 형식 파일만 허용
 
     private boolean done; // 업로드 하자마자 완료 처리
-    //임시
+
     public MultipartFile[] files;
 }

@@ -20,7 +20,7 @@ import java.util.List;
 @Lazy
 @Service
 @RequiredArgsConstructor
-public class MemberInfoService implements UserDetailsService {
+public class MemberInfoService implements UserDetailsService { // 스프링 시큐리티 서비
 
     private final MemberRepository memberRepository;
     private final FileInfoService fileInfoService;

@@ -4,7 +4,6 @@ import lombok.Setter;
 import org.koreait.member.MemberInfo;
 import org.koreait.member.constants.Authority;
 import org.koreait.member.entities.Member;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -39,8 +38,12 @@ public class MemberUtil {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof
                 MemberInfo memberInfo){
-
-            return member == null ? memberInfo.getMember() : member;
+            if (member == null){
+                setMember(memberInfo.getMember());
+                return member;
+            } else {
+                return member;
+            }
         }
 
             return null;
