@@ -10,8 +10,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@EnableJpaAuditing
-@EnableScheduling
+@EnableJpaAuditing // JPA 실행시키기 위해
+@EnableScheduling // Schedule 실행시키기 위해
 @EnableRedisHttpSession
 public class MvcConfig implements WebMvcConfigurer {
     /**
@@ -20,9 +20,9 @@ public class MvcConfig implements WebMvcConfigurer {
      * @param registry
      */
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    public void addResourceHandlers(ResourceHandlerRegistry registry) { // addResourceHandler 정적 경로 설정
         registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/static/");
+                .addResourceLocations("classpath:/static/"); // classspath 클래스 파일을 인식할 수 있는 경로
     }
 
     /**

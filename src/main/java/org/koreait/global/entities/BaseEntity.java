@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Getter @Setter
-@MappedSuperclass
+@MappedSuperclass // 엔티티 클래스 중 상위 클래스
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
