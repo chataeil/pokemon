@@ -1,6 +1,6 @@
 package org.koreait.file.entities;
 
-
+// config -> entity -> repository -> controller -> service -> template -> static
 import jakarta.persistence.*;
 import lombok.Data;
 import org.koreait.global.entities.BaseMemberEntity;

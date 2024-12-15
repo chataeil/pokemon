@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @Entity
 public class Member extends BaseEntity implements Serializable {
-    @Id @GeneratedValue
+    @Id @GeneratedValue // 증감
     private Long seq; // 회원 번호
 
     @Column(length = 65, nullable = false, unique = true)
@@ -39,7 +39,7 @@ public class Member extends BaseEntity implements Serializable {
     private Gender gender;
 
     @Column(length = 10, nullable = false)
-    private String zipCode;
+    private String zipCode; // 우편번호
 
     @Column(length = 100, nullable = false)
     private String address;

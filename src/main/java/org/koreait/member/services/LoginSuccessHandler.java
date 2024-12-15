@@ -16,7 +16,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         HttpSession session = request.getSession();
 
         // requestLogin 세션값 비우기
-        session.removeAttribute("requestLogin");
+        session.removeAttribute("requestLogin"); // 로그인 요청한게 세션에 남으면 로그인 하기 전이 남아있기 때문에.
 
     // Userdetails 구현체
 

@@ -54,7 +54,7 @@ file:
 springdoc:
   version: '1.0.0'
   api-docs:
-    path: /apidocs.html
+    path: /api-docs
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
   swagger-ui:

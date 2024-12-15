@@ -24,8 +24,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.List;
 
-@Tag(name="파일 API", description = "파일 업로드, 조회, 다운로드, 삭제 기능 제공합니다.") // 같은 태그끼리 엮는거
-@RestController
+@Tag(name="파일 API", description = "파일 업로드, 조회, 다운로드, 삭제 기능 제공합니다.") // 같은 태그끼리 엮는거 swagger
+@RestController // JSONREST API 응답을 JSON
 @RequestMapping("/api/file")
 @RequiredArgsConstructor
 public class ApiFileController {
@@ -55,11 +55,11 @@ public class ApiFileController {
             @Parameter(name="location", description = "파일 그룹 내에서 위치 코드"),
             @Parameter(name="file", description = "업로드 파일, 복수개 전송 가능", required = true) // 요청 명세 파라미터로 작성
     })
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.CREATED) //웹 브라우저 기준 요청 의도 명확하게 알기 위해서.
     @PostMapping("/upload")
-    public JSONData upload(@RequestPart("file") MultipartFile[] files, @Valid RequestUpload form, Errors errors) {
-        if (errors.hasErrors()) { //errors를 넣기 위해 작성된 메서드 .
-            throw new                                                                                                                                  BadRequestException(utils.getErrorMessages(errors));
+    public JSONData upload(@RequestPart("file") MultipartFile[] files/*인터페아스 파일쪽은 헤더가 다름 콘텐트 타입이 다름 멀티파트 form데이터 형태로 헤더가 날라감 파트를 나눴기 때문 양식 데이터 와 파일 데이터가 형태가 다르기 때문에 동시에 전송하기 위해 파트를 나눔.*/, @Valid RequestUpload form, Errors errors) {
+        if (errors.hasErrors()) { //errors 를 넣기 위해 작성된 메서드 .
+            throw new BadRequestException(utils.getErrorMessages(errors)); //CommonRestController에서 조회함.
         }
 
         form.setFiles(files);
@@ -67,7 +67,7 @@ public class ApiFileController {
          * 단일 파일 업로드
          *      - 기 업로드된 파일을 삭제하고 새로 추가
          */
-        if (form.isSingle()){
+        if (form.isSingle()){ // 만약 싱글파일이 맞다면. 김채원 사진 없어지고 원래 있던 파일 지운거.
             deleteService.deletes(form.getGid(), form.getLocation()); // 싱글톤
         }
 
@@ -78,14 +78,13 @@ public class ApiFileController {
             doneService.process(form.getGid(), form.getLocation());
         }
         JSONData data = new JSONData(uploadedFiles);
-        data.setStatus(HttpStatus.CREATED);
-
+        data.setStatus(HttpStatus.CREATED); // JSON 데이터 기준 JSON 이랑 HTTP 둘다 create 로 보내겠다.
         return data;
     }
 
-    // 파일 다운로드 중요한건 응답 헤더에 대한 통신 content-dispor뭐시기가 있어야댐.(추가 설명 필요)
+    // 파일 다운로드 중요한건 응답 헤더에 대한 통신 content-disposition 있어야댐.
     @GetMapping("/download/{seq}")
-    public void download(@PathVariable("seq") Long seq) {
+    public void download(@PathVariable("seq") Long seq) { // 가변 함.
         DownloadService.process(seq);
     }
 
@@ -103,6 +102,7 @@ public class ApiFileController {
      * 파일 목록 조회
      * gid, location
      */
+
     @GetMapping(path={"/list/{gid}", "/list/{gid}/{location}"})
     public JSONData list(@PathVariable("gid") String gid,
                          @PathVariable(name="location", required = false) String location,
@@ -115,7 +115,7 @@ public class ApiFileController {
 
     // 파일 단일 삭제
     @DeleteMapping("/delete/{seq}")
-    public JSONData delete(@PathVariable("seq") Long seq) {
+    public JSONData delete(@PathVariable("seq") Long seq) { // {seq}를 Long 타입 seq로 쓰도록 함.
 
         FileInfo item = deleteService.delete(seq);
 
@@ -148,7 +148,5 @@ public class ApiFileController {
         }catch (IOException e){
 
         }
-
-
     }
 }

@@ -36,7 +36,7 @@ public class MemberController {
     private final MemberInfoService infoService; // 회원 정보 조회
     private final MemberUtil memberUtil; //
 
-    @ModelAttribute("requestAgree")
+    @ModelAttribute("requestAgree") // 속성을 넣어서 데이터를 뷰로 전달할때.
     public RequestAgree requestAgree() {
         return new RequestAgree();
     }

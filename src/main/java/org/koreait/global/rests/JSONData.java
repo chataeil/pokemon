@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Data
 @NoArgsConstructor
-public class JSONData { // 통일성 있게 처리
+public class JSONData { // 통일성 있게 응답이 성공하든 실패하든 동일한 형식으로 응답 가능
 
     private HttpStatus status = HttpStatus.OK;
     private boolean success = true;

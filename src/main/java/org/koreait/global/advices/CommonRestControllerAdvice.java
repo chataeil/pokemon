@@ -18,7 +18,7 @@ import java.util.Map;
 public class CommonRestControllerAdvice  {
 
     private final Utils utils;
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)// 에러 처리
     public ResponseEntity<JSONData> errorHandler(Exception e) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR; // 기본 에러 코드 500
 
@@ -31,7 +31,7 @@ public class CommonRestControllerAdvice  {
             if(errorMessages != null){
                 message = errorMessages;
             }else {
-                message = commonException.isErrorCode() ? utils.getMessage((String)message)
+                message = commonException.isErrorCode() ? utils.getMessage((String)message) // 커먼 익셉션이 코드로 되어있다면 getMessage로 반환
                         : message;
             }
         }

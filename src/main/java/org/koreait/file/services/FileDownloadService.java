@@ -36,7 +36,7 @@ public class FileDownloadService {
         try(FileInputStream fis = new FileInputStream(file); // 파일 데이터를 가져와
             BufferedInputStream bis = new BufferedInputStream(fis)){ // 버퍼에 담아서
         // 바디의 출력을 filename에 지정된 파일로 변경
-        response.setHeader("Content-Disposition"/*이거 좀 중요함*/, "attachment; filename" + fileName); // 꼭 있어야 댐 Content-Disposition 헤더 내용 출력 내용이 filename 쪽으로 바뀌고 올라가고 다운됨.
+        response.setHeader("Content-Disposition"/*이거 좀 중요함*/, "attachment; filename" + fileName); // 꼭 있어야 댐 Content-Disposition 이 있어야 파일을 파일 형태로 받을 수 있음 저게 있어야 다운로드 가능.
         response.setContentType(contentType);
         response.setHeader("Cache-Control", "no-cache"); // 브라우저 캐시를 사용하면 안되기 때문에 추가.
         response.setHeader("Pragma", "no-cache"); // 솔직히 없어도 됨 근데 혹시 몰라서 넣음

@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice(annotations = ApplyErrorPage.class)
+@ControllerAdvice(annotations = ApplyErrorPage.class) // 프론트 쪽이라 페이지어블
 @RequiredArgsConstructor
 public class CommonControllerAdvice { // 공통 처리
     private final Utils utils;

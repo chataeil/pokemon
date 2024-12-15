@@ -29,7 +29,6 @@ public class MemberInfoService implements UserDetailsService { // 스프링 시�
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
 
-
         List<Authorities> items = member.getAuthorities();
         if (items == null) {
             Authorities auth = new Authorities();

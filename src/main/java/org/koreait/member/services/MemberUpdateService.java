@@ -23,7 +23,7 @@ import java.util.List;
 @Lazy // 지연로딩 - 최초로 빈을 사용할때 생성
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional // DB에 쓰는거
 public class MemberUpdateService {
 
     private final MemberRepository memberRepository;
@@ -124,15 +124,16 @@ public class MemberUpdateService {
                  * 기존 권한을 삭제하고 다시 등록.
                  */
                 member = memberRepository.findByEmail(member.getEmail()).orElse(null);
-                QAuthorities qAuthorities = QAuthorities.authorities;
+                QAuthorities qAuthorities = QAuthorities.authorities; // db 엔티티 데이터를 나타내는 객체
                 List<Authorities> items = (List<Authorities>) authoritiesRepository.findAll(qAuthorities.member.eq(member));
                 if (items != null) {
                     authoritiesRepository.deleteAll(items);
                     authoritiesRepository.flush();
+
                 }
-                ;
 
                 authoritiesRepository.saveAllAndFlush(authorities);
+
             }
 
             // 회원 권한 업데이트 처리 E
@@ -142,4 +143,5 @@ public class MemberUpdateService {
             memberUtil.setMember(member);
 
     }
+
 }

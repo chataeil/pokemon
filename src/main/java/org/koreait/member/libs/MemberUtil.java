@@ -35,7 +35,7 @@ public class MemberUtil {
      * @return
      */
     public Member getMember(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication(); //★auth 핵심★ 인증을 해야 만들어짐. 인증된 객체 현재 로그인한 놈 정보
         if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof
                 MemberInfo memberInfo){
             if (member == null){
