@@ -25,7 +25,7 @@ import java.nio.file.Files;
 import java.util.List;
 
 @Tag(name="파일 API", description = "파일 업로드, 조회, 다운로드, 삭제 기능 제공합니다.") // 같은 태그끼리 엮는거 swagger
-@RestController // JSONREST API 응답을 JSON
+@RestController // REST API 응답을 JSON
 @RequestMapping("/api/file")
 @RequiredArgsConstructor
 public class ApiFileController {
@@ -59,7 +59,7 @@ public class ApiFileController {
     @PostMapping("/upload")
     public JSONData upload(@RequestPart("file") MultipartFile[] files/*인터페아스 파일쪽은 헤더가 다름 콘텐트 타입이 다름 멀티파트 form데이터 형태로 헤더가 날라감 파트를 나눴기 때문 양식 데이터 와 파일 데이터가 형태가 다르기 때문에 동시에 전송하기 위해 파트를 나눔.*/, @Valid RequestUpload form, Errors errors) {
         if (errors.hasErrors()) { //errors 를 넣기 위해 작성된 메서드 .
-            throw new BadRequestException(utils.getErrorMessages(errors)); //CommonRestController에서 조회함.
+            throw new BadRequestException(utils.getErrorMessages(errors)); //CommonRestController 에서 조회함.
         }
 
         form.setFiles(files);

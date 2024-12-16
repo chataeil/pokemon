@@ -1,9 +1,7 @@
 package org.koreait.global.configs;
 
-import org.koreait.member.services.LoginFailureHandler;
-import org.koreait.member.services.LoginSuccessHandler;
-import org.koreait.member.services.MemberAccessDeniedHandler;
-import org.koreait.member.services.MemberAuthenticationExceptionHandler;
+import org.koreait.member.services.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -21,7 +19,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private MemberInfoService memberInfoService;
+
     @Bean
+
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
         /* 인증 설정 S - 로그인, 로그아웃 */ // 람다를 사용하는 이유는 DSL 도메인 특화 역할 영역별로 특정할 수 있기 때문.
@@ -65,6 +67,15 @@ public class SecurityConfig {
                    .accessDeniedHandler(new MemberAccessDeniedHandler()); // 로그인 이후 인가 실패
         });
         /* 인가 설정 E */
+        /* 자동 로그인 설정 S*/
+        http.rememberMe(c -> { // 아이디 자동저장.
+            c.rememberMeParameter("autoLogin") // 스프링 부트는 내가 뭘 지정했는지 모르니까 알려주는 거. login.html 에 25열 name="autoLogin"
+                    .tokenValiditySeconds(60 * 60 * 24 * 30) // 자동 로그인을 유지할 시간, 기간. 기본값은 14일
+                    .userDetailsService(memberInfoService) // 멤버 정보 조회.
+                    .authenticationSuccessHandler(new LoginSuccessHandler()); // 로그인 성공시
+        });
+        /* 자동 로그인 설정 E*/
+
         return http.build(); // 설정 객체를 빌드로 만들어서 내보내는 역할.
     }
 
