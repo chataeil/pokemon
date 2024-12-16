@@ -22,17 +22,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @EnableConfigurationProperties(FileProperties.class)
 public class FileUploadService {
-    private final FileProperties properties; // 파일 설정 주입
+    private final FileProperties properties; // 업로드할 파일 경로가 필요하기 때문
     private final FileInfoRepository fileInfoRepository;
     private final FileInfoService infoService;
     public List<FileInfo> upload(RequestUpload form) {
         String gid = form.getGid(); // 필수라 검증
-        gid = StringUtils.hasText(gid) ? gid : UUID.randomUUID().toString(); // service에는 필수가 아니기 때문에 만듦.
+        gid = StringUtils.hasText(gid) ? gid : UUID.randomUUID().toString(); // gid는 필수기 때문에 만약 gid가 없다면 자바쪽에서 유니크 아이디를 만들 수 있는 편의기능인 UUID 사용
 
         String location = form.getLocation(); // 필수는 아니지만 있으면 표시
-        MultipartFile[] files = form.getFiles();
+        MultipartFile[] files = form.getFiles(); // 실제로 올라와 있는 파일 정보.
 
-        String rootPath = properties.getPath(); // 업로드할 파일에 대한 경로가 필요
+        String rootPath = properties.getPath(); // 업로드할 파일에 대한 경로가 필요 // 업로드할 파일 경로가 필요하기 때문
 
 
         // 파일 업로드 성공 파일 정보

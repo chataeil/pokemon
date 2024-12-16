@@ -26,11 +26,11 @@ public class FileDownloadService {
         //윈도우에서 한글 깨짐 방지
         fileName = new String(fileName.getBytes(), StandardCharsets.ISO_8859_1); // 맥은 상관없는데 윈도우즈는 이런 문제가 발생됨.
 
-        String contentType = item.getContentType();
-        contentType = StringUtils.hasText(contentType) ? contentType : "application/octet-stream";
+        String contentType = item.getContentType(); // 형식을 알려줘야 하기 때문에 content-type이 다운로드에 필요함.
+        contentType = StringUtils.hasText(contentType) ? contentType : "application/octet-stream"; // contenttype이 없을시 octet-stream이 기본값
 
-        File file = new File(item.getFilePath());
-        if (!file.exists()){
+        File file = new File(item.getFilePath()); // 파일 객체 만듦
+        if (!file.exists()){ //누적 파일을 삭제하니까 다운로드가 안되기 때문에 예외 발생시킴.
             throw new FileNotFoundException();
         }
         try(FileInputStream fis = new FileInputStream(file); // 파일 데이터를 가져와

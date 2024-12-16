@@ -39,35 +39,35 @@ public class FileInfoService  {
         return item;
     }
 
-    public List<FileInfo> getList(String gid, String location, FileStatus status) {
+    public List<FileInfo> getList(String gid, String location, FileStatus status) { // 목록 조회 조회가 목적 조회가 많기 때문에 불리언 빌더 사용
         status = Objects.requireNonNullElse(status, FileStatus.ALL);
 
         QFileInfo fileInfo = QFileInfo.fileInfo;
-        BooleanBuilder andBuilder = new BooleanBuilder();
-        andBuilder.and(fileInfo.gid.eq(gid)); // 필수
+        BooleanBuilder andBuilder = new BooleanBuilder(); // 불리언 빌더로 조건을 더 추가할 수 있도록 사용함.
+        andBuilder.and(fileInfo.gid.eq(gid)); // 필수 무조건 추가하고 시작함
 
-        if (StringUtils.hasText(location)) { // 선택
+        if (StringUtils.hasText(location)) { // 선택 있을때 추가하는 방식
             andBuilder.and(fileInfo.location.eq(location));
         }
 
         // 파일 작업 완료 상태
-        if (status != FileStatus.ALL) {
-            andBuilder.and(fileInfo.done.eq(status == FileStatus.DONE));
+        if (status != FileStatus.ALL) { // ALL일때는 다 보이니까 처리할 필요가 없어서 ALL이 아닐때를 구함
+            andBuilder.and(fileInfo.done.eq(status == FileStatus.DONE)); // 완료 상태일때만 true값 넣어서 완료에 대한 목록 조회를 요청했을때엔 비교해서 바로 DONE이 true일때 다른 사람이 조회가능하고 펄스면 조회불가
         }
 
-        List<FileInfo> items = (List<FileInfo>)infoRepository.findAll(andBuilder, Sort.by(asc("createdAt")));
+        List<FileInfo> items = (List<FileInfo>)infoRepository.findAll(andBuilder, Sort.by(asc("createdAt"))); // 파인드 올로 조회함 파일쪽은 올린 순서대로 보여야 하기 때문에 createAt을 오름차순으로 추가함.
 
         // 추가 정보 처리
-        items.forEach(this::addInfo);
+        items.forEach(this::addInfo); // 마지막에 추가 정보처리를 넣음 공윶
 
         return items;
     }
 
-    public List<FileInfo> getList(String gid, String location) {
+    public List<FileInfo> getList(String gid, String location) {// 보통 업로드 완료된 파일을 더 조회함. 기본값 넣음
         return getList(gid, location, FileStatus.DONE);
     }
 
-    public List<FileInfo> getList(String gid) { // 파일 그룹작업 완료된 파일
+    public List<FileInfo> getList(String gid) { // 파일 그룹작업 완료된 파일 GID로만 조회할 수 있도록 오버로딩함
         return getList(gid, null);
     }
 
