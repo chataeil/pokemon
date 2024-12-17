@@ -53,8 +53,8 @@ commonLib.emailAuth = {
                 timer.reset(timerCallback);
                 timer.start(timerCallback);
 
-                if(typeof successCallback === 'function'){
-                successCallback();
+                if (typeof successCallback === 'function') {
+                    successCallback();
                 }
             } catch (err) { // 인증코드 발급 실패
                 alert(err.message);

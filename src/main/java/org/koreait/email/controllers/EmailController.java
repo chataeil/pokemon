@@ -22,7 +22,7 @@ public class EmailController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @GetMapping("/auth/{to}")
     public void authCode(@PathVariable("to") String to){
-        if (authService.sendCode(to)){
+        if (!authService.sendCode(to)){
             throw new AuthCodeIssueException();
         }
     }
