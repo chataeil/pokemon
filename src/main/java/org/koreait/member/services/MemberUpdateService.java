@@ -86,7 +86,7 @@ public class MemberUpdateService {
 
         // 회원정보 수정일때는 비밀번호가 입력된 경우만 저장
         String password = form.getPassword();
-        if (StringUtils.hasText(password)){
+        if (StringUtils.hasText(password)){ // 비번을 입력하면 비번도 바뀌고 입력 안하면 정보만 수정됨
             String hash = passwordEncoder.encode(password);
             member.setPassword(hash);
             member.setCredentialChangedAt(LocalDateTime.now());

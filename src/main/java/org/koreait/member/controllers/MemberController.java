@@ -27,7 +27,7 @@ import java.util.List;
 @ApplyErrorPage
 @RequestMapping("/member")
 @RequiredArgsConstructor
-@SessionAttributes({"requestAgree", "requestLogin"}) // 데이터 유지
+@SessionAttributes({"requestAgree", "requestLogin"}) // 데이터 유지 세션쪽 속성 추가
 public class MemberController {
 
     private final Utils utils;
@@ -123,7 +123,7 @@ public class MemberController {
      * @return
      */
     @PostMapping("/join_ps")
-    public String joinPs(@SessionAttribute("requestAgree") RequestAgree agree, @Valid RequestJoin form, Errors errors, SessionStatus status, Model model) {
+    public String joinPs(@SessionAttribute("requestAgree")/* 멀티 페이지일땐 데이터를 공유할 수 없기 때문에 범위를 넓힘 기존 데이터 유지하면 다음 페이지 넘길때*/ RequestAgree agree, @Valid RequestJoin form, Errors errors, SessionStatus status, Model model) {
         commonProcess("join", model); // 회원가입 공통 처리
 
         joinValidator.validate(agree, errors); // 약관 동의 여부 체크
@@ -149,7 +149,7 @@ public class MemberController {
 
     @ResponseBody
     @GetMapping("/refresh")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()") // 메서드 시큐리티 메서드 실행 전 권한체크
     public void refresh(Principal principal){
 
         MemberInfo memberInfo = (MemberInfo) infoService.loadUserByUsername(principal
