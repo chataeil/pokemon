@@ -27,7 +27,7 @@ import java.util.List;
 @ApplyErrorPage
 @RequestMapping("/member")
 @RequiredArgsConstructor
-@SessionAttributes({"requestAgree", "requestLogin"}) // 데이터 유지 세션쪽 속성 추가
+@SessionAttributes({"requestAgree", "requestLogin", "authCodeVerified"}) // 데이터 유지 세션쪽 속성 추가
 public class MemberController {
 
     private final Utils utils;
@@ -44,6 +44,12 @@ public class MemberController {
     @ModelAttribute("requestLogin")
     public RequestLogin requestLogin() {
         return new RequestLogin();
+    }
+
+    // 이메일 인증 여부
+    @ModelAttribute("authCodeVerified")
+    public boolean authCodeVerified(){
+        return false;
     }
 
     /* 회원 페이지 CSS */
@@ -106,6 +112,9 @@ public class MemberController {
     @PostMapping("/join")
     public String join(RequestAgree agree, Errors errors, @ModelAttribute RequestJoin form, Model model) {
         commonProcess("join", model); // 회원 가입 공통 처리
+        //
+        // 회원가입 양식 첫 유입에서는 이메일인증 상태를 false
+        model.addAttribute("authCodeVerified", false);
 
         joinValidator.validate(agree, errors);
 

@@ -21,14 +21,15 @@ public class EmailController {
      */
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @GetMapping("/auth/{to}")
-    public void authCode(@PathVariable("to") String to){
-        if (!authService.sendCode(to)){
+    public void authCode(@PathVariable("to") String to) {
+        if (!authService.sendCode(to)) {
             throw new AuthCodeIssueException();
         }
     }
 
     /**
-     * 발급받은 인증 코드 검증
+     * 발급받은 인증코드 검증
+     *
      * @param authCode
      */
     @ResponseStatus(HttpStatus.NO_CONTENT)
