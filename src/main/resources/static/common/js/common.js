@@ -17,7 +17,7 @@ commonLib.getMeta = function(mode) {
 *
 */
 commonLib.Url = function(url){
-    return `${commonLib.getMeta('rootUrl').replace("/", "")}url`;
+    return `${commonLib.getMeta('rootUrl').replace("/", "")}${url}`;
 }
 
 /**
