@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true) // 일치하지 않으면 무시하고 넘어감 필요한것만 정의 하려고
 public class ApiPokemon {
     private int id;
     private String name;
