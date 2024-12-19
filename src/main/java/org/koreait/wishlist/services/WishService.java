@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.koreait.member.entities.Member;
 import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.repositories.MemberRepository;
-import org.koreait.wishlist.Repositories.WishRepository;
 import org.koreait.wishlist.constants.WishType;
 import org.koreait.wishlist.entities.QWish;
 import org.koreait.wishlist.entities.Wish;
 import org.koreait.wishlist.entities.WishId;
+import org.koreait.wishlist.repositories.WishRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,33 +31,35 @@ public class WishService {
     private final MemberRepository memberRepository;
     private final SpringTemplateEngine templateEngine;
 
-    public void process(String mode, Long seq, WishType type){
-        if (!memberUtil.isLogin()){
+    public void process(String mode, Long seq, WishType type) {
+        if (!memberUtil.isLogin()) {
             return;
         }
 
         mode = StringUtils.hasText(mode) ? mode : "add";
-        Member member= memberUtil.getMember();
+        Member member = memberUtil.getMember();
         member = memberRepository.findByEmail(member.getEmail()).orElse(null);
         try {
-            if (mode.equals("remove")) {
+            if (mode.equals("remove")) { // 찜 해제
                 WishId wishId = new WishId(seq, type, member);
                 repository.deleteById(wishId);
 
-            } else {
+            } else { // 찜 추가
                 Wish wish = new Wish();
                 wish.setSeq(seq);
                 wish.setType(type);
                 wish.setMember(member);
                 repository.save(wish);
             }
+
             repository.flush();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public List<Long> getMyWish(WishType type){
-        if (!memberUtil.isLogin()){
+
+    public List<Long> getMyWish(WishType type) {
+        if (!memberUtil.isLogin()) {
             return List.of();
         }
 
@@ -70,10 +72,12 @@ public class WishService {
                 .from(wish)
                 .where(builder)
                 .fetch();
+
         return items;
+
     }
 
-    public String showWish(Long seq, String type){
+    public String showWish(Long seq, String type) {
         return showWish(seq, type, null);
     }
 
@@ -83,11 +87,10 @@ public class WishService {
 
         Context context = new Context();
         context.setVariable("seq", seq);
-        context.setVariable("type", WishType.valueOf(type));
+        context.setVariable("type", _type);
         context.setVariable("myWishes", myWishes);
         context.setVariable("isMine", myWishes.contains(seq));
         context.setVariable("isLogin", memberUtil.isLogin());
-
 
         return templateEngine.process("common/_wish", context);
     }

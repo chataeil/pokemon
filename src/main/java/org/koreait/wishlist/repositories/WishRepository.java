@@ -1,4 +1,4 @@
-package org.koreait.wishlist.Repositories;
+package org.koreait.wishlist.repositories;
 
 import org.koreait.wishlist.entities.Wish;
 import org.koreait.wishlist.entities.WishId;
