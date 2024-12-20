@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.libs.Utils;
+import org.koreait.global.paging.CommonSearch;
+import org.koreait.global.paging.ListData;
 import org.koreait.member.MemberInfo;
 import org.koreait.member.controllers.RequestProfile;
 import org.koreait.member.entities.Member;
@@ -11,6 +13,10 @@ import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.MemberInfoService;
 import org.koreait.member.services.MemberUpdateService;
 import org.koreait.mypage.validators.ProfileValidator;
+import org.koreait.pokemon.controllers.PokemonSearch;
+import org.koreait.pokemon.entities.Pokemon;
+import org.koreait.pokemon.services.PokemonInfoService;
+import org.koreait.wishlist.constants.WishType;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -23,6 +29,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 //통제 목적
 @Controller
@@ -37,6 +44,8 @@ public class MypageController {
     private final MemberUpdateService updateService;
     private final ProfileValidator profileValidator;
     private final MemberInfoService infoService;
+    private final PokemonInfoService pokemonInfoService;
+
     @ModelAttribute("profile")
     public Member getMember(){
         return memberUtil.getMember();
@@ -96,6 +105,28 @@ public class MypageController {
         model.addAttribute("profile", memberInfo.getMember()); //세션 어트리뷰트 쓴 이유 공통으로 쓰면 수정해도 안바뀜 그렇기 때문에 modelattribute로 새로 갱신함
     }
 
+    /**
+     * 찜하기 목록
+     *
+     * @param mode : POKEMON : 포켓몬 찜하기 목록, BOARD : 게시글 찜하기 목록
+     * @return
+     */
+    @GetMapping({"/wishlist", "/wishlist/{mode}"})
+    public String wishlist(@PathVariable(name="mode", required = false) WishType mode, CommonSearch search, Model model) {
+        commonProcess("wishlist", model);
+
+        mode = Objects.requireNonNullElse(mode, WishType.POKEMON);
+        if (mode == WishType.BOARD){ // 게시글 찜하기 목록
+
+        }else { // 포켓몬 찜하기 목록
+            PokemonSearch pSearch = modelMapper.map(search, PokemonSearch.class);
+            ListData<Pokemon> data = pokemonInfoService.getMyPokemons(pSearch);
+            model.addAttribute("items", data.getItems());
+            model.addAttribute("pagination", data.getPagination());
+        }
+        return utils.tpl("mypage/wishlist");
+    }
+
 
         /**
          * 컨트롤러 공통 처리 영역
@@ -115,6 +146,9 @@ public class MypageController {
             addCommonScript.add("address");
             addScript.add("mypage/profile");
             pageTitle = utils.getMessage("회원정보_수정");
+        } else if (mode.equals("wishlist")){ // 찜하기 목록
+            addCommonScript.add("wish");
+            pageTitle = utils.getMessage("MY_ABLE");
         }
 
         model.addAttribute("addCommonScript", addCommonScript);
