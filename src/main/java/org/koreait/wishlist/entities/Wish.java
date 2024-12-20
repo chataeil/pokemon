@@ -16,8 +16,8 @@ public class Wish {
     @Enumerated(EnumType.STRING)
     @Column(length=15, name="_type")
     private WishType type;
+
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
-
 }

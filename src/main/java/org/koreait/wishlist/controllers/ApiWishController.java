@@ -18,8 +18,8 @@ public class ApiWishController {
     @GetMapping({"/add", "/remove"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void process(@RequestParam("seq") Long seq, @RequestParam("type") WishType type) {
-       String mode = request.getRequestURI().contains("/remove") ? "remove" : "add";
+        String mode = request.getRequestURI().contains("/remove") ? "remove" : "add";
 
-       service.process(mode, seq, type);
+        service.process(mode, seq, type);
     }
 }
