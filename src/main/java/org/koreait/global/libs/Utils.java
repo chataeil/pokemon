@@ -92,7 +92,7 @@ public class Utils {
                     .toList();
             // 글로벌 에러코드 필드 - global
             if (!gMessages.isEmpty()) {
-                messages.put("global", gMessages);
+                messages.put("global", gMessages); // global이 비어있지 않으면 오류들을 global 이라는 키값에 포함
             }
 
             return messages;

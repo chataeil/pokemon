@@ -53,7 +53,7 @@ public class CommonControllerAdvice { // 공통 처리
                 sb.append(String.format("%s.location.replace('%s');", target, url));
             }
             if (!sb.isEmpty()) {
-                data.put("script", sb.toString());
+                data.put("script", sb.toString()); // 스트링버퍼의 데이터가 view로 표시됨.
             }
         }
 
@@ -61,9 +61,9 @@ public class CommonControllerAdvice { // 공통 처리
         data.put("_status", status);
         data.put("message", message);
         ModelAndView mv = new ModelAndView();
-        mv.setStatus(status);
-        mv.addAllObjects(data);
-        mv.setViewName(tpl);
+        mv.setStatus(status); //객체 상태의 코드
+        mv.addAllObjects(data); // 예외처리 정보 담는곳
+        mv.setViewName(tpl); //보여줄 view 이름 템플릿 에러 이름
         return mv;
     }
 }

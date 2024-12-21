@@ -11,7 +11,7 @@ import java.io.Serializable;
 @IdClass(AuthoritiesID.class) // 이거 추가해야됨
 public class Authorities implements Serializable {
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // 첨엔 로딩 안했다가 사용할 때 로딩
     private Member member;
 
 

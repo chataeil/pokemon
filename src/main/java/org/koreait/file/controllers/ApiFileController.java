@@ -57,7 +57,7 @@ public class ApiFileController {
     })
     @ResponseStatus(HttpStatus.CREATED) //웹 브라우저 기준 요청 의도 명확하게 알기 위해서.
     @PostMapping("/upload")
-    public JSONData upload(@RequestPart("file") MultipartFile[] files/*인터페아스 파일쪽은 헤더가 다름 콘텐트 타입이 다름 멀티파트 form데이터 형태로 헤더가 날라감 파트를 나눴기 때문 양식 데이터 와 파일 데이터가 형태가 다르기 때문에 동시에 전송하기 위해 파트를 나눔.*/, @Valid RequestUpload form, Errors errors) {
+    public JSONData upload(@RequestPart("file") MultipartFile[] files, @Valid RequestUpload form, Errors errors) { // 파일 데이터와 폼 데이터는 형태가 다르기 때문에 동시에 보내려고 Multifile[] 씀
         if (errors.hasErrors()) { //errors 를 넣기 위해 작성된 메서드 .
             throw new BadRequestException(utils.getErrorMessages(errors)); //CommonRestController 에서 조회함.
         }
@@ -78,7 +78,7 @@ public class ApiFileController {
             doneService.process(form.getGid(), form.getLocation()); // 업데이트가 완료 되자마자 완료 처리 하면 돈 프로세스에 gid랑 location 추가해서 올리자마자 완료처리
         }
         JSONData data = new JSONData(uploadedFiles);
-        data.setStatus(HttpStatus.CREATED); // JSON 데이터 기준 JSON 이랑 HTTP 둘다 create 로 보내겠다.
+        data.setStatus(HttpStatus.CREATED); // 업로드 파일을 JSON 객체로 저장 후 반환
         return data;
     }
 

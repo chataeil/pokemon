@@ -23,7 +23,6 @@ public class SecurityConfig {
     private MemberInfoService memberInfoService;
 
     @Bean
-
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
         /* 인증 설정 S - 로그인, 로그아웃 */ // 람다를 사용하는 이유는 DSL 도메인 특화 역할 영역별로 특정할 수 있기 때문.

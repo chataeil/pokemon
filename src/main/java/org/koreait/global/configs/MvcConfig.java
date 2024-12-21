@@ -36,5 +36,5 @@ public class MvcConfig implements WebMvcConfigurer {
     @Bean
     public HiddenHttpMethodFilter hiddenHttpMethodFilter(){
         return new HiddenHttpMethodFilter();
-    }
+    }// form 태그에서는 GET과 POST만 지원하기 때문에 별도의 히든 경로를 설정해서 처리할 수 있도록 함.
 }

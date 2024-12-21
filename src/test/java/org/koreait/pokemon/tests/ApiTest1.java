@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.koreait.pokemon.api.entities.ApiPokemon;
 import org.koreait.pokemon.api.entities.ApiResponse;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;

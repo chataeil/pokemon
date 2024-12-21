@@ -21,7 +21,7 @@ public class BeansConfig {
     /**
      * 항상 사용하는게 아닌 필요할 때만 사용
      *
-     *범용 기능이면 거의 대부분 class class 를 사용함.
+     * 범용 기능이면 거의 대부분 class class 를 사용함.
      * @return
      */
     @Lazy
