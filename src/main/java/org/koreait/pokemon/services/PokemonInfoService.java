@@ -63,7 +63,7 @@ public class PokemonInfoService {
         }
         List<Long> seq = search.getSeq();
         if (seq != null && !seq.isEmpty()){
-            andBuilder.and(pokemon.seq.in(seq));
+            andBuilder.and(pokemon.seq.in(seq)); // in == seq가 값 목록에 포함되어 있는지 확인 and연산
         }
         /* 검색 처리 E */
         // 반환값은 무적권 page
