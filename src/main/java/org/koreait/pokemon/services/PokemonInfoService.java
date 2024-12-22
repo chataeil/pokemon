@@ -126,6 +126,7 @@ public class PokemonInfoService {
             item.set_types(Arrays.stream(types.split("\\|\\|")).toList());
         }
     }
+
     private void addInfo(Pokemon item, boolean isView){
         addInfo(item);
         if (!isView) return;

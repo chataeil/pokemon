@@ -4,15 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.paging.ListData;
+import org.koreait.pokemon.api.entities.Types;
 import org.koreait.pokemon.entities.Pokemon;
 import org.koreait.pokemon.services.PokemonInfoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +19,17 @@ import java.util.List;
 @ApplyErrorPage
 @RequestMapping("/pokemon")
 @RequiredArgsConstructor
+@SessionAttributes("requestRecommend")
 public class PokemonController {
 
     private final Utils utils;
     private final PokemonInfoService infoService;
 
+
+    @ModelAttribute("requestRecommend")
+    public RequestRecommend recommend(){
+        return new RequestRecommend();
+    }
     @GetMapping("/list")
     public String list(@ModelAttribute PokemonSearch search, Model model) {
         commonProcess("list", model);
@@ -45,7 +49,13 @@ public class PokemonController {
         commonProcess("view", model);
         return utils.tpl("pokemon/view");
     }
+    @PostMapping("/recommend")
+    public String recommend(@ModelAttribute RequestRecommend recommend, Model model) {
+        commonProcess("recommend", model);
 
+
+        return "redirect:/pokemon/list";
+    }
     private void commonProcess(String mode, Model model) {
         mode = StringUtils.hasText(mode) ? mode : "list";
         String pageTitle = utils.getMessage("포켓몬_도감");
@@ -60,12 +70,16 @@ public class PokemonController {
             addCss.add("pokemon/list"); // 목록쪽에만 적용되는 스타일
         } else if (mode.equals("view")) {
             addCss.add("pokemon/view"); // 상세쪽에만 적용되는 스타일
-
             // 상세 보기에서는 포켓몬 이름으로 제목을 완성
             Pokemon item = (Pokemon) model.getAttribute("item");
             if (item != null) {
                 pageTitle = String.format("%s - %s", item.getName(), pageTitle);
             }
+        } else if (mode.equals("recommend")) {
+            addCss.add("pokemon/recommend");
+                Pokemon type = (Pokemon) model.getAttribute("type");
+                pageTitle = String.format("%s - %s", type.get_types(), pageTitle);
+
         }
 
         model.addAttribute("pageTitle", pageTitle);
