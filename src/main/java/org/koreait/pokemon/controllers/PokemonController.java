@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.paging.ListData;
-import org.koreait.pokemon.api.entities.Types;
 import org.koreait.pokemon.entities.Pokemon;
 import org.koreait.pokemon.services.PokemonInfoService;
 import org.springframework.stereotype.Controller;
@@ -19,17 +18,13 @@ import java.util.List;
 @ApplyErrorPage
 @RequestMapping("/pokemon")
 @RequiredArgsConstructor
-@SessionAttributes("requestRecommend")
 public class PokemonController {
 
     private final Utils utils;
     private final PokemonInfoService infoService;
 
 
-    @ModelAttribute("requestRecommend")
-    public RequestRecommend recommend(){
-        return new RequestRecommend();
-    }
+
     @GetMapping("/list")
     public String list(@ModelAttribute PokemonSearch search, Model model) {
         commonProcess("list", model);
@@ -49,13 +44,7 @@ public class PokemonController {
         commonProcess("view", model);
         return utils.tpl("pokemon/view");
     }
-    @PostMapping("/recommend")
-    public String recommend(@ModelAttribute RequestRecommend recommend, Model model) {
-        commonProcess("recommend", model);
 
-
-        return "redirect:/pokemon/list";
-    }
     private void commonProcess(String mode, Model model) {
         mode = StringUtils.hasText(mode) ? mode : "list";
         String pageTitle = utils.getMessage("포켓몬_도감");
@@ -75,12 +64,7 @@ public class PokemonController {
             if (item != null) {
                 pageTitle = String.format("%s - %s", item.getName(), pageTitle);
             }
-        } else if (mode.equals("recommend")) {
-            addCss.add("pokemon/recommend");
-                Pokemon type = (Pokemon) model.getAttribute("type");
-                pageTitle = String.format("%s - %s", type.get_types(), pageTitle);
-
-        }
+        } else
 
         model.addAttribute("pageTitle", pageTitle);
         model.addAttribute("addCss", addCss);

@@ -1,4 +1,4 @@
-package org.koreait.pokemon.controllers;
+package org.koreait.reommend.controllers;
 
 import lombok.Data;
 

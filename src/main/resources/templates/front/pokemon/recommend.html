@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{front/layouts/main}">
+
+<main layout:fragment="content">
+
+    <h1 th:text="#{포켓몬_타입_추천}"></h1>
+    <form name="frmRecommend" method="POST" th:action="@{/pokemon/recommend}" autocomplete="off" th:object="${requestRecommend}">
+        <ul>
+            <li>
+                <input type="radio" name="selectedType" value="1" th:field="*{selectTerms}" id="selectTerms1">
+                <label for="selectTerms1" th:text="#{당신은_물속에서_활동하는_것을_좋아하나요.}"></label>
+            </li>
+            <li>
+                <input type="radio" name="selectedType" value="2" th:field="*{selectTerms}" id="selectTerms2">
+                <label for="selectTerms2" th:text="#{당신은_불을_다루는_것에_관심이_있나요.}"></label>
+            </li>
+            <li>
+                <input type="radio" name="selectedType" value="3" th:field="*{selectTerms}" id="selectTerms3">
+                <label for="selectTerms3" th:text="#{자연과_함께하는_활동을_선호하나요.}"></label>
+            </li>
+            <li>
+                <input type="radio" name="selectedType" value="4" th:field="*{selectTerms}" id="selectTerms4">
+                <label for="selectTerms4" th:text="#{전기를_이용한_기술에_관심이_있나요.}"></label>
+            </li>
+            <li>
+                <input type="radio" name="selectedType" value="5" th:field="*{selectTerms}" id="selectTerms5">
+                <label for="selectTerms5" th:text="#{당신은_하늘을_나는_것에_흥미를_느끼나요.}"></label>
+            </li>
+        </ul>
+        <div class="error" th:each="err : ${#fields.errors('*')}" th:text="${err}"></div>
+        <button type="submit" th:text="#{타입_추천_받기}"></button>
+    </form>
+
+</main>
+</html>
