@@ -16,7 +16,7 @@ import java.util.List;
 @SessionAttributes("RequestRecommend")
 @RequiredArgsConstructor
 public class RecommendController {
-    private final ApiUpdateService;
+    private final ApiUpdateService service;
     private final Utils utils;
 
     @ModelAttribute("requestRecommend")

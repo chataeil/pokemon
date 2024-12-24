@@ -1,5 +1,6 @@
 package org.koreait.member.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ public class MemberController {
     private final MemberUpdateService updateService; // 회원 가입 처리
     private final MemberInfoService infoService; // 회원 정보 조회
     private final MemberUtil memberUtil; //
+    private final HttpSession session;
 
     @ModelAttribute("requestAgree") // 속성을 넣어서 데이터를 뷰로 전달할때.
     public RequestAgree requestAgree() {
@@ -159,11 +161,11 @@ public class MemberController {
     @ResponseBody
     @GetMapping("/refresh")
     @PreAuthorize("isAuthenticated()") // 메서드 시큐리티 메서드 실행 전 권한체크
-    public void refresh(Principal principal){ // 인증된 사용자 정보
+    public void refresh(Principal principal, HttpSession session){ // 인증된 사용자 정보
 
         MemberInfo memberInfo = (MemberInfo) infoService.loadUserByUsername(principal
                 .getName());
-        memberUtil.setMember(memberInfo.getMember());
+        session.setAttribute("member", memberInfo.getMember());
     }
     /**
      * 공통 처리 부분

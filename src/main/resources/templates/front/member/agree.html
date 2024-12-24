@@ -13,8 +13,8 @@
         </div>
         <ul>
             <li>
-                <input type="checkbox" name="requiredTerms1" value="true" th:field="*{requiredTerms1}" id="requiredTerms1" class="terms">
-                <label for="requiredTerms1" th:text="#{이용약관에_동의합니다.}"></label>
+                <input type="checkbox" name="requiredTerms1" value="true" th:field="*{requiredTerms1}" id="requiredTerms1" class="">
+                <label for="requiredTerms1" th:text="#{이용약관에_동의합니다.}"></label>terms
                 <div class="error" th:each="err : ${#fields.errors('requiredTerms1')}" th:text="${err}"></div>
             </li>
             <li>

@@ -1,5 +1,6 @@
 package org.koreait.mypage.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.koreait.global.annotations.ApplyErrorPage;
@@ -45,6 +46,7 @@ public class MypageController {
     private final ProfileValidator profileValidator;
     private final MemberInfoService infoService;
     private final PokemonInfoService pokemonInfoService;
+    private final HttpSession session;
 
     @ModelAttribute("profile")
     public Member getMember(){
@@ -96,11 +98,11 @@ public class MypageController {
     @ResponseBody
     @GetMapping("/refresh")
     @PreAuthorize("isAuthenticated()")
-    public void refresh(Principal principal, Model model) {
+    public void refresh(Principal principal, Model model, HttpSession session) {
 
         MemberInfo memberInfo = (MemberInfo) infoService.loadUserByUsername(principal
                 .getName());
-        memberUtil.setMember(memberInfo.getMember());
+        session.setAttribute("member", memberInfo.getMember());
 
         model.addAttribute("profile", memberInfo.getMember()); //세션 어트리뷰트 쓴 이유 공통으로 쓰면 수정해도 안바뀜 그렇기 때문에 modelattribute로 새로 갱신함
     }
