@@ -111,9 +111,9 @@ public class MemberUpdateService {
 
         // 로그인 회원 정보 업데이트
         Member _member = memberRepository.findByEmail(member.getEmail()).orElse(null);
-        if (_member != null){
-        infoService.addInfo(member);
-        session.setAttribute("member", member);
+        if (_member != null) {
+            infoService.addInfo(_member);
+            session.setAttribute("member", _member);
         }
     }
 

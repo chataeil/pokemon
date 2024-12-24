@@ -163,8 +163,7 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()") // 메서드 시큐리티 메서드 실행 전 권한체크
     public void refresh(Principal principal, HttpSession session){ // 인증된 사용자 정보
 
-        MemberInfo memberInfo = (MemberInfo) infoService.loadUserByUsername(principal
-                .getName());
+        MemberInfo memberInfo = (MemberInfo) infoService.loadUserByUsername(principal.getName());
         session.setAttribute("member", memberInfo.getMember());
     }
     /**
