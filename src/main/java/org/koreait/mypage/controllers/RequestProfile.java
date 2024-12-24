@@ -1,4 +1,4 @@
-package org.koreait.member.controllers;
+package org.koreait.mypage.controllers;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

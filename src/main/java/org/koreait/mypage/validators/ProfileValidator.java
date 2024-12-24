@@ -1,7 +1,7 @@
 package org.koreait.mypage.validators;
 
 import org.koreait.global.validators.PasswordValidator;
-import org.koreait.member.controllers.RequestProfile;
+import org.koreait.mypage.controllers.RequestProfile;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

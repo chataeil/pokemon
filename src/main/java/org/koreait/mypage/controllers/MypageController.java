@@ -8,7 +8,6 @@ import org.koreait.global.libs.Utils;
 import org.koreait.global.paging.CommonSearch;
 import org.koreait.global.paging.ListData;
 import org.koreait.member.MemberInfo;
-import org.koreait.member.controllers.RequestProfile;
 import org.koreait.member.entities.Member;
 import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.MemberInfoService;
