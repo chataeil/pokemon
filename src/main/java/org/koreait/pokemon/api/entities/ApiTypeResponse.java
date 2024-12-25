@@ -5,11 +5,6 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ApiResponse {
-    private int count;
-    private String next;
-    private String previous;
+public class ApiTypeResponse {
     private List<UrlItem> results;
-
-
 }

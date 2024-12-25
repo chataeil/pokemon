@@ -1,4 +1,4 @@
-package org.koreait.reommend.controllers;
+package org.koreait.pokemon.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.koreait.global.libs.Utils;
@@ -29,6 +29,10 @@ public class RecommendController {
         commonProcess("recommend", model);
 
         return utils.tpl("pokemon/recommend");
+    }
+    @GetMapping("/your_type")
+    public String your_type(){
+        return null;
     }
 
     private void commonProcess(String mode, Model model) {
