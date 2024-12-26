@@ -164,15 +164,27 @@ public class Utils {
 
         return "";
     }
+
     /**
      * 메세지를 세션쪽에 저장해서 임시 팝업으로 띄운다.
+     *
      * @param message
      */
-    public void showSessionMessage(String message){
-
+    public void showSessionMessage(String message) {
+        HttpSession session = request.getSession();
+        session.setAttribute("showMessage", message);
     }
-    public void removeSesssionMessage(){
+
+    public void removeSessionMessage() {
         HttpSession session = request.getSession();
         session.removeAttribute("showMessage");
+    }
+
+    public String getParam(String name) {
+        return request.getParameter(name);
+    }
+
+    public String[] getParams(String name) {
+        return request.getParameterValues(name);
     }
 }

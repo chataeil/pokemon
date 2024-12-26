@@ -7,22 +7,22 @@ import java.util.List;
 @Data
 public class RequestRecommend {
 
-    private List<String> selectTerms;
-    private List<String> selectTerms2;
-    private List<String> selectTerms3;
-    private List<String> selectTerms4;
-    private List<String> selectTerms5;
-    private List<String> selectTerms6;
-    private List<String> selectTerms7;
-    private List<String> selectTerms8;
-    private List<String> selectTerms9;
-    private List<String> selectTerms10;
-    private List<String> selectTerms11;
-    private List<String> selectTerms12;
-    private List<String> selectTerms13;
-    private List<String> selectTerms14;
-    private List<String> selectTerms15;
-    private List<String> selectTerms16;
-    private List<String> selectTerms17;
-    private List<String> selectTerms18;
+    private String selectTerms1;
+    private String selectTerms2;
+    private String selectTerms3;
+    private String selectTerms4;
+    private String selectTerms5;
+    private String selectTerms6;
+    private String selectTerms7;
+    private String selectTerms8;
+    private String selectTerms9;
+    private String selectTerms10;
+    private String selectTerms11;
+    private String selectTerms12;
+    private String selectTerms13;
+    private String selectTerms14;
+    private String selectTerms15;
+    private String selectTerms16;
+    private String selectTerms17;
+    private String selectTerms18;
 }
