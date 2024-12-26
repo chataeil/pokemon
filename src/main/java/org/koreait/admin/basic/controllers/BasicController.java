@@ -33,7 +33,9 @@ public class BasicController {
         commonProcess("siteConfig", model);
 
         return "admin/basic/siteConfig";
+
     }
+
 
     /**
      * 기본설정 공통 처리 부분
