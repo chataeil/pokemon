@@ -17,6 +17,7 @@ public class ApiPokemon {
     private List<Types> types;
     private List<Ability> abilities;
 
+
     @JsonAlias("base_experience")
     private int baseExperience;
 

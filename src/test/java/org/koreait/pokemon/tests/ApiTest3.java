@@ -12,6 +12,6 @@ public class ApiTest3 {
 
     @Test
     void updateTest1() {
-    service.updateTypes();
+        service.updateTypes();
   }
 }
