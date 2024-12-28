@@ -1,3 +1,4 @@
+
 package org.koreait.member.controllers;
 
 import jakarta.servlet.http.HttpSession;
@@ -28,17 +29,16 @@ import java.util.List;
 @ApplyErrorPage
 @RequestMapping("/member")
 @RequiredArgsConstructor
-@SessionAttributes({"requestAgree", "requestLogin", "authCodeVerified"}) // 데이터 유지 세션쪽 속성 추가
+@SessionAttributes({"requestAgree", "requestLogin", "authCodeVerified"})
 public class MemberController {
 
     private final Utils utils;
+    private final MemberUtil memberUtil;
     private final JoinValidator joinValidator; // 회원 가입 검증
     private final MemberUpdateService updateService; // 회원 가입 처리
     private final MemberInfoService infoService; // 회원 정보 조회
-    private final MemberUtil memberUtil; //
-    private final HttpSession session;
 
-    @ModelAttribute("requestAgree") // 속성을 넣어서 데이터를 뷰로 전달할때.
+    @ModelAttribute("requestAgree")
     public RequestAgree requestAgree() {
         return new RequestAgree();
     }
@@ -50,7 +50,7 @@ public class MemberController {
 
     // 이메일 인증 여부
     @ModelAttribute("authCodeVerified")
-    public boolean authCodeVerified(){
+    public boolean authCodeVerified() {
         return false;
     }
 
@@ -78,21 +78,7 @@ public class MemberController {
         return utils.tpl("member/login");
     }
 
-//    @ResponseBody
-//    @GetMapping("/test")
-//    public void test(){
-//        MemberInfo memberInfo = (MemberInfo)SecurityContextHolder.getContext()
-//                .getAuthentication().getPrincipal();
-//        System.out.println(memberInfo);
-/*    public void test(@AuthenticationPrincipal MemberInfo memberInfo){
-        System.out.println(memberInfo);*/
-//        System.out.println(SecurityContextHolder.getContext()
-//                .getAuthentication().getPrincipal()); // 미로그인 상태 anonymousUser 문자열
-//    }
- /*   public void test(Principal principal){
-        String email = principal.getName();
-        System.out.println(email);
-    }*/
+
     /**
      * 회원가입 약관 동의
      *
@@ -114,7 +100,7 @@ public class MemberController {
     @PostMapping("/join")
     public String join(RequestAgree agree, Errors errors, @ModelAttribute RequestJoin form, Model model) {
         commonProcess("join", model); // 회원 가입 공통 처리
-        //
+
         // 회원가입 양식 첫 유입에서는 이메일인증 상태를 false
         model.addAttribute("authCodeVerified", false);
 
@@ -134,7 +120,7 @@ public class MemberController {
      * @return
      */
     @PostMapping("/join_ps")
-    public String joinPs(@SessionAttribute("requestAgree")/* 멀티 페이지일땐 데이터를 공유할 수 없기 때문에 범위를 넓힘 기존 데이터 유지하면 다음 페이지 넘길때*/ RequestAgree agree, @Valid RequestJoin form, Errors errors, SessionStatus status, Model model) {
+    public String joinPs(@SessionAttribute("requestAgree") RequestAgree agree, @Valid RequestJoin form, Errors errors, SessionStatus status, Model model) {
         commonProcess("join", model); // 회원가입 공통 처리
 
         joinValidator.validate(agree, errors); // 약관 동의 여부 체크
@@ -160,12 +146,13 @@ public class MemberController {
 
     @ResponseBody
     @GetMapping("/refresh")
-    @PreAuthorize("isAuthenticated()") // 메서드 시큐리티 메서드 실행 전 권한체크
-    public void refresh(Principal principal, HttpSession session){ // 인증된 사용자 정보
+    @PreAuthorize("isAuthenticated()")
+    public void refresh(Principal principal, HttpSession session) {
 
         MemberInfo memberInfo = (MemberInfo) infoService.loadUserByUsername(principal.getName());
         session.setAttribute("member", memberInfo.getMember());
     }
+
     /**
      * 공통 처리 부분
      *

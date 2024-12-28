@@ -15,7 +15,10 @@
             <li>
                 <input type="checkbox" name="requiredTerms1" value="true" th:field="*{requiredTerms1}" id="requiredTerms1" class="">
                 <label for="requiredTerms1" th:text="#{이용약관에_동의합니다.}"></label>terms
-                <div class="error" th:each="err : ${#fields.errors('requiredTerms1')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('requiredTerms1')}" th:text="${err}">
+                    <div th:object="${@termsInfoServicde.get()'user'}"
+                         th:utext="*{@utils.nl2br(content)}" class=""></div>
+                </div>
             </li>
             <li>
                 <input type="checkbox" name="requiredTerms2" value="true" th:field="*{requiredTerms2}" id="requiredTerms2" class="terms">
