@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class RecommendController {
     }
 
     @GetMapping("/recommend")
-    public String recommend( Model model) {
+    public String recommend(Model model) {
         List<PokemonType> types = resultService.getRecommendType();
         model.addAttribute("types", types);
         commonProcess("recommend", model);
@@ -37,29 +36,15 @@ public class RecommendController {
     }
 
     @PostMapping("/recommend")
-    public String recommend_ps(RequestRecommend recommend, Model model){
-        List<String> selectedTypes = new ArrayList<>();
+    public String recommend_ps(@ModelAttribute("requestRecommend") RequestRecommend recommend, Model model) {
+        String selectedType = recommend.getSelectTerms(); // 단일 필드로 선택된 값 가져오기
 
-        selectedTypes.add(recommend.getSelectTerms1());
-        selectedTypes.add(recommend.getSelectTerms2());
-        selectedTypes.add(recommend.getSelectTerms3());
-        selectedTypes.add(recommend.getSelectTerms4());
-        selectedTypes.add(recommend.getSelectTerms5());
-        selectedTypes.add(recommend.getSelectTerms6());
-        selectedTypes.add(recommend.getSelectTerms7());
-        selectedTypes.add(recommend.getSelectTerms8());
-        selectedTypes.add(recommend.getSelectTerms9());
-        selectedTypes.add(recommend.getSelectTerms10());
-        selectedTypes.add(recommend.getSelectTerms11());
-        selectedTypes.add(recommend.getSelectTerms12());
-        selectedTypes.add(recommend.getSelectTerms13());
-        selectedTypes.add(recommend.getSelectTerms14());
-        selectedTypes.add(recommend.getSelectTerms15());
-        selectedTypes.add(recommend.getSelectTerms16());
-        selectedTypes.add(recommend.getSelectTerms17());
-        selectedTypes.add(recommend.getSelectTerms18());
+        if (selectedType == null || selectedType.isEmpty()) {
+            model.addAttribute("error", "타입을 선택해주세요.");
+            return utils.tpl("pokemon/recommend");
+        }
 
-        model.addAttribute("selectedTypes", selectedTypes);
+        model.addAttribute("selectedType", selectedType);
         return utils.tpl("pokemon/recommendresult");
     }
 

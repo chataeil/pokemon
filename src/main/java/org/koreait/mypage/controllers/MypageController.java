@@ -65,10 +65,9 @@ public class MypageController {
     public String profile(Model model){
         commonProcess("profile", model);
 
-
-
         Member member = memberUtil.getMember();
         RequestProfile form = modelMapper.map(member, RequestProfile.class); // 모델 메퍼를 통해 커맨더 객체에 값을 넣어줌
+
         String optionalTerms = member.getOptionalTerms();
         if (StringUtils.hasText(optionalTerms)) { //구조가 다른 옵셔널 텀즈 DB엔 문자로 들어가 있고 복수개일땐 ||로 고정되어 있기 때문에 커맨더 객체 타입으로 바꿔줌
             form.setOptionalTerms(Arrays.stream(optionalTerms.split("\\|\\|")).toList());
@@ -76,6 +75,7 @@ public class MypageController {
         model.addAttribute("requestProfile",form);
         return utils.tpl("mypage/profile");
     }
+
     @PatchMapping("/profile")
     public String updateProfile(@Valid RequestProfile form, Errors errors, Model model){
         commonProcess("profile", model);
@@ -93,6 +93,9 @@ public class MypageController {
 
         return "redirect:/mypage"; // 회원 정보 수정 완료 후 마이페이지 메인 이동
     }
+
+
+
     @ResponseBody
     @GetMapping("/refresh")
     @PreAuthorize("isAuthenticated()")
@@ -103,6 +106,8 @@ public class MypageController {
 
         model.addAttribute("profile", memberInfo.getMember()); //세션 어트리뷰트 쓴 이유 공통으로 쓰면 수정해도 안바뀜 그렇기 때문에 modelattribute로 새로 갱신함
     }
+
+
 
     /**
      * 찜하기 목록

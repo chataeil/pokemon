@@ -13,6 +13,9 @@ import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.repositories.AuthoritiesRepository;
 import org.koreait.member.repositories.MemberRepository;
 import org.koreait.mypage.controllers.RequestProfile;
+import org.koreait.pokemon.api.services.ApiImageService;
+import org.koreait.pokemon.api.services.ApiUpdateService;
+import org.koreait.pokemon.entities.Pokemon;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -89,6 +92,7 @@ public class MemberUpdateService {
         if (optionalTerms != null) {
             member.setOptionalTerms(String.join("||", optionalTerms));
         }
+
 
         // 회원정보 수정일때는 비밀번호가 입력 된 경우만 저장
         String password = form.getPassword();

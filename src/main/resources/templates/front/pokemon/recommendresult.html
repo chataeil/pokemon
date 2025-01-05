@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <h1>당신과 어울리는 포켓몬</h1>
 <ul>
-    <div th:each="types : ${selectedTypes}">
-        <span th:each="type : ${types}" th:text="${'당신은' + type + '타입 포켓몬과 궁합이 잘 맞아요~'}"></span>
-    </div>
+    <li th:each="type : ${selectedType}">
+        <span th:text="'당신은 ' + ${#messages.msg(type)} + ' 타입 포켓몬과 궁합이 잘 맞아요'"></span>
+    </li>
 </ul>
 </html>

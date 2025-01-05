@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.koreait.member.constants.Gender;
+import org.koreait.pokemon.entities.Pokemon;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -39,4 +40,6 @@ public class RequestProfile {
     private String addressSub;
 
     private List<String> optionalTerms; // 추가 선택 약관
+
+    private List<String> frontImage;
 }
