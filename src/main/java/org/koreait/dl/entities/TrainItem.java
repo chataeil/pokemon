@@ -3,7 +3,10 @@ package org.koreait.dl.entities;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.koreait.global.entities.BaseEntity;
 
 @Data
@@ -25,7 +28,4 @@ public class TrainItem extends BaseEntity {
     private int item9;
     private int item10;
     private int result;
-
-
-
 }

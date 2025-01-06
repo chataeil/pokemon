@@ -1,4 +1,3 @@
-
 package org.koreait.member.services;
 
 import com.querydsl.core.BooleanBuilder;
@@ -18,6 +17,8 @@ import org.koreait.member.entities.Authorities;
 import org.koreait.member.entities.Member;
 import org.koreait.member.entities.QMember;
 import org.koreait.member.repositories.MemberRepository;
+import org.koreait.mypage.controllers.RequestProfile;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +30,7 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Lazy
@@ -40,6 +42,7 @@ public class MemberInfoService implements UserDetailsService {
     private final FileInfoService fileInfoService;
     private final JPAQueryFactory queryFactory;
     private final HttpServletRequest request;
+    private final ModelMapper modelMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -66,6 +69,31 @@ public class MemberInfoService implements UserDetailsService {
                 .member(member)
                 .authorities(authorities)
                 .build();
+    }
+
+    public Member get(String email) {
+        MemberInfo memberInfo = (MemberInfo)loadUserByUsername(email);
+        return memberInfo.getMember();
+    }
+
+    public RequestProfile getProfile(String email) {
+        Member member = get(email);
+
+        RequestProfile profile = modelMapper.map(member, RequestProfile.class);
+
+        List<Authority> authorities = member.getAuthorities()
+                .stream()
+                .map(Authorities::getAuthority).toList();
+        profile.setAuthorities(authorities);
+
+        String optionalTerms = member.getOptionalTerms();
+        if (StringUtils.hasText(optionalTerms)) {
+            profile.setOptionalTerms(Arrays.stream(optionalTerms.split("||")).toList());
+        }
+
+        profile.setMode("admin");
+
+        return profile;
     }
 
     /**
@@ -116,11 +144,7 @@ public class MemberInfoService implements UserDetailsService {
         // 권한 검색 S
         List<Authority> authorities = search.getAuthority();
         if (authorities != null && !authorities.isEmpty()) {
-
-            //List<Authorities> _authorities = authorities.stream()
-            //                .map(a -> )
-
-            // andBuilder.and(member.authorities.)
+            andBuilder.and(member.authorities.any().authority.in(authorities));
         }
         // 권한 검색 E
 

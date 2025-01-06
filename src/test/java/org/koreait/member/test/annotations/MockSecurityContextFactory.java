@@ -35,10 +35,10 @@ public class MockSecurityContextFactory implements WithSecurityContextFactory<Mo
 
         List<Authorities> _authorities = Arrays.stream(annotation.authority())
                 .map(a -> {
-                    Authorities auth = new Authorities();
-                    auth.setAuthority(a);
-                    auth.setMember(member);
-                    return auth;
+                  Authorities auth = new Authorities();
+                  auth.setAuthority(a);
+                  auth.setMember(member);
+                  return auth;
                 }).toList();
         member.setAuthorities(_authorities);
 

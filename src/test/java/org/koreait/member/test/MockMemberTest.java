@@ -18,7 +18,7 @@ public class MockMemberTest {
 
     @Test
     @MockMember(authority = {Authority.USER, Authority.ADMIN})
-    void test1(){
+    void test1() {
         Member member = memberUtil.getMember();
         System.out.println(member);
         System.out.println(memberUtil.isLogin());

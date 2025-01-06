@@ -8,25 +8,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
-
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.*;
 
 @SpringBootTest
 @ActiveProfiles({"default", "test"})
 public class PaginationTest {
-    @Mock // 가짜 객체 생성
-    private HttpServletRequest request; // 서버가 돌아가야지 객체 생성하는 인터페이스
+
+    @Mock
+    private HttpServletRequest request;
 
     @BeforeEach
     void init() {
         // Stub(스텁 - 가짜 데이터)
-        given(request.getQueryString()).willReturn("query=블로그&test1=1=1&test2=2&page=3");
-//        given(request.getQueryString()).willReturn(null);
+      //given(request.getQueryString()).willReturn("query=블로그&test1=1&test2=2&page=3");
+        given(request.getQueryString()).willReturn(null);
     }
 
     @Test
-    void test1(){
-        //(int page, int total, int ranges, int limit)
+    void test1() {
+        // Pagination(int page, int total, int ranges, int limit)
         Pagination pagination = new Pagination(23, 9999, 10, 20, request);
         System.out.println(pagination);
 

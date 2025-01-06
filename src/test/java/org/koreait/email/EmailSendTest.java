@@ -56,9 +56,9 @@ public class EmailSendTest {
     @Test
     void test3() {
         RequestEmail form = new RequestEmail();
-        form.setTo(List.of("ckxodlf12@naver.com", "ckxodlf12@naver.com"));
-        form.setCc(List.of("ckxodlf12@gmail.com"));
-        form.setBcc(List.of("ckxodlf12@gmail.com"));
+        form.setTo(List.of("yonggyo00@kakao.com", "yonggyo00@kakao.com"));
+        form.setCc(List.of("yonggyo1981@gmail.com"));
+        form.setBcc(List.of("yonggyo1981@gmail.com"));
         form.setSubject("테스트 이메일 제목...");
         form.setContent("<h1>테스트 이메일 내용...</h1>");
 

@@ -36,18 +36,17 @@ public class TrainService {
     private String dataUrl;
 
     @Scheduled(cron="0 0 1 * * *") // 새벽 1시 마다 훈련
-    public void process(){
+    public void process() {
         try {
-            ProcessBuilder builder = new ProcessBuilder(runPath, scriptPath + "train.py", dataUrl/*전체 데이터*/ + "?mode=ALL", dataUrl/*하루치 데이터*/);
+            ProcessBuilder builder = new ProcessBuilder(runPath, scriptPath + "train.py", dataUrl + "?mode=ALL", dataUrl);
             Process process = builder.start();
-            process.inputReader().lines().forEach(System.out::println);
             int exitCode = process.waitFor();
+            System.out.println(exitCode);
 
-        }catch (Exception e){
-        }
+        } catch (Exception e) {}
     }
 
-    public void log(TrainItem item){
+    public void log(TrainItem item) {
         repository.saveAndFlush(item);
     }
 
@@ -55,11 +54,11 @@ public class TrainService {
     public List<TrainItem> getList(boolean isAll) {
 
 
-        if (isAll){
+        if (isAll) {
             return repository.findAll(Sort.by(asc("createdAt")));
-        }else {
+        } else {
             QTrainItem trainItem = QTrainItem.trainItem;
-            return (List<TrainItem>)repository.findAll(trainItem.createdAt.after(LocalDateTime.of(LocalDate.now().minusDays(1L), LocalTime.of(0, 0,0))), Sort.by(asc("createdAt")));
+            return (List<TrainItem>)repository.findAll(trainItem.createdAt.after(LocalDateTime.of(LocalDate.now().minusDays(1L), LocalTime.of(0, 0, 0))), Sort.by(asc("createdAt")));
         }
     }
 }

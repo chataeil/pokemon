@@ -13,8 +13,8 @@ public class EmailAuthServiceTest {
     private EmailAuthService service;
 
     @Test
-    void test1(){
-       boolean result = service.sendCode("ckxodlf12@gmail.com");
+    void test1() {
+        boolean result = service.sendCode("yonggyo00@kakao.com");
         System.out.println(result);
     }
 }

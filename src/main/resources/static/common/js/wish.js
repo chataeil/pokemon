@@ -1,4 +1,5 @@
 
+
 window.addEventListener("DOMContentLoaded", function() {
     const wishButtons = document.getElementsByClassName("wish-btn");
     for (const el of wishButtons) {

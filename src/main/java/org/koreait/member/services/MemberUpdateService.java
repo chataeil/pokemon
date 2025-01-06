@@ -13,11 +13,9 @@ import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.repositories.AuthoritiesRepository;
 import org.koreait.member.repositories.MemberRepository;
 import org.koreait.mypage.controllers.RequestProfile;
-import org.koreait.pokemon.api.services.ApiImageService;
-import org.koreait.pokemon.api.services.ApiUpdateService;
-import org.koreait.pokemon.entities.Pokemon;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,7 +77,9 @@ public class MemberUpdateService {
     }
 
     public void process(RequestProfile form, List<Authority> authorities) {
-        Member member = memberUtil.getMember(); // 로그인한 사용자의 정보
+        String email = form.getEmail();
+        Member member = memberUtil.isAdmin() && StringUtils.hasText(email) ? memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email)) : memberUtil.getMember(); // 로그인한 사용자의 정보
+
         member.setName(form.getName());
         member.setNickName(form.getNickName());
         member.setBirthDt(form.getBirthDt());
@@ -92,7 +92,6 @@ public class MemberUpdateService {
         if (optionalTerms != null) {
             member.setOptionalTerms(String.join("||", optionalTerms));
         }
-
 
         // 회원정보 수정일때는 비밀번호가 입력 된 경우만 저장
         String password = form.getPassword();
@@ -119,10 +118,12 @@ public class MemberUpdateService {
         save(member, _authorities);
 
         // 로그인 회원 정보 업데이트
-        Member _member = memberRepository.findByEmail(member.getEmail()).orElse(null);
-        if (_member != null) {
-            infoService.addInfo(_member);
-            session.setAttribute("member", _member);
+        if (!StringUtils.hasText(email)) {
+            Member _member = memberRepository.findByEmail(member.getEmail()).orElse(null);
+            if (_member != null) {
+                infoService.addInfo(_member);
+                session.setAttribute("member", _member);
+            }
         }
     }
 

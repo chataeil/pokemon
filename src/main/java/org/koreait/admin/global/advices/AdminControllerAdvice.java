@@ -12,7 +12,7 @@ public class AdminControllerAdvice {
     private final MemberUtil memberUtil;
 
     @ModelAttribute("profile")
-    public Member profile(){
+    public Member profile() {
         return memberUtil.getMember();
     }
 }

@@ -1,116 +1,221 @@
-!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{admin/layouts/main}">
-<div layout:fragment="content">
-    <h1>회원검색</h1>
-    <form name="frmSearch" method="GET" th:action="@{/admin/member/list}" th:object="${memberSearch}" autocomplete="off">
-        <table class="table-cols">
-            <tr>
-                <th width="180">날짜검색</th>
-                <td class="flex ac">
-                    <select name="dateType" th:field="*{dateType}" class="w180 mr5">
-                        <option value="createdAt">가입일</option>
-                        <option value="credentialChangedAt">비밀번호 변경일</option>
-                        <option value="deletedAt">탈퇴일</option>
-                    </select>
-                    <input type="date" name="sDate" th:field="*{sDate}" class="w220">
-                    <span class="error" th:each="err : ${#fields.errors('sDate')}" th:text="${err}"></span>
-                    ~
-                    <input type="date" name="eDate" th:field="*{eDate}" class="w220">
-                    <span class="error" th:each="err : ${#fields.errors('eDate')}" th:text="${err}"></span>
-                </td>
-            </tr>
-            <tr>
-                <th>회원권한</th>
-                <td>
-                    <span class="checkbox" th:each="authority, status : ${authorities}">
-                        <input type="checkbox" name="authority" th:value="${authority.name}" th:id="${'authority-' + status.index}" th:field="*{authority}">
-                        <label th:for="${'authority-' + status.index}" th:text="${#messages.msg(authority.name)}"></label>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <th>키워드 검색</th>
-                <td class="flex">
-                    <select name="sopt" th:field="*{sopt}" class="w180 mr5">
-                        <option value="ALL">통합검색</option>
-                        <option value="EMAIL">이메일</option>
-                        <option value="NAME">이름</option>
-                    </select>
-                    <input type="text" name="skey" th:field="*{skey}" placeholder="검색할 키워드를 입력하세요.">
-                </td>
-            </tr>
-        </table>
-        <button type="submit" class="submit-btn">검색하기</button>
-    </form>
+var commonLib = commonLib ?? {};
 
-    <h2>회원목록</h2>
-    <form name="frmList" method="POST" th:action="@{/admin/member/list}" target="ifrmProcess">
-        <input type="hidden" name="_method" value="PATCH">
+/**
+* 메타 태그 정보 조회
+*   mode - rootUrl : <meta name="rootUrl" ... />
+*/
+commonLib.getMeta = function(mode) {
+    if (!mode) return;
 
-        <table class="table-rows">
-            <thead>
-                <tr>
-                    <th width="40">
-                        <input type="checkbox" class="check-all" data-target-class="chk" id="check-all">
-                        <label for="check-all" class="standalone"></label>
-                    </th>
-                    <th width="180">이메일</th>
-                    <th width="180">회원권한</th>
-                    <th width="180">회원명/닉네임</th>
-                    <th width="180">가입일시</th>
-                    <th width="180">비밀번호 변경일시</th>
-                    <th width="180">탈퇴일시</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:if="${items == null || items.isEmpty()}">
-                    <td colspan="8" class="no-data">조회된 회원이 없습니다.</td>
-                </tr>
-                <tr th:unless="${items == null || items.isEmpty()}" th:each="item, status : ${items}" th:object="${item}">
-                    <input type="hidden" th:name="${'seq_' + status.index}" th:value="*{seq}">
-                    <td align="center">
-                        <input type="checkbox" name="chk" class="chk" th:value="${status.index}" th:id="${'chk-' + status.index}">
-                        <label th:for="${'chk-' + status.index}" class="standalone"></label>
-                    </td>
-                    <td th:text="*{email}" align="center"></td>
-                    <td align="center">
-                        <span th:each="authority : *{authorities}" th:text="${#messages.msg(authority.authority.name)}" class="mr10"></span>
-                    </td>
-                    <td th:text="*{#strings.concat(name, '/', nickName)}" align="center"></td>
-                    <td align="center" th:text="*{#temporals.format(createdAt, 'yyyy.MM.dd HH:mm:ss')}"></td>
-                    <td align="center">
-                        <div th:if="*{credentialChangedAt != null}"
-                             th:text="*{#temporals.format(credentialChangedAt, 'yyyy.MM.dd HH:mm:ss')}"></div>
-                        <input type="checkbox" th:name="${'updateCredentialChangedAt_' + status.index}" value="true" th:id="${'updateCredentialChangedAt_' + status.index}">
-                        <label th:for="${'updateCredentialChangedAt_' + status.index}">갱신하기</label>
-                    </td>
-                    <td align="center">
-                        <th:block th:if="*{deletedAt != null}">
-                            <div th:text="*{#temporals.format(deletedAt, 'yyyy.MM.dd HH:mm:ss')}"></div>
-                            <input type="checkbox" th:name="${'deletedAt_' + status.index}" value="CANCEL" th:id="${'deletedAt_' + status.index}">
-                            <label th:for="${'deletedAt_' + status.index}">탈퇴취소</label>
-                        </th:block>
-                        <th:block th:if="*{deletedAt == null}">
-                            <input type="checkbox" th:name="${'deletedAt_' + status.index}" value="RESIGN" th:id="${'deletedAt_' + status.index}">
-                            <label th:for="${'deletedAt_' + status.index}">탈퇴하기</label>
-                        </th:block>
-                    </td>
-                    <td>
-                        <button type="button" class="sbtn">정보수정</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    const el = document.querySelector(`meta[name='${mode}']`);
+
+    return el?.content;
+};
+
+/**
+* 자바스크립트에서 만든 주소에 컨택스트 경로 추가
+*
+*/
+commonLib.url = function(url) {
+    return `${commonLib.getMeta('rootUrl').replace("/", "")}${url}`;
+};
+
+/**
+* Ajax 요청 처리
+*
+* @params url : 요청 주소, http[s] : 외부 URL - 컨텍스트 경로는 추가 X
+* @params method 요청방식 - GET, POST, DELETE, PATCH ...
+* @params callback 응답 완료 후 후속 처리 콜백 함수
+* @params data : 요청 데이터(POST, PATCH, PUT ...)
+* @params headers : 추가 요청 헤더
+*/
+commonLib.ajaxLoad = function(url, callback, method = 'GET', data, headers, isText = false) {
+    if (!url) return;
+
+    const { getMeta } = commonLib;
+    const csrfHeader = getMeta("_csrf_header");
+    const csrfToken = getMeta("_csrf");
+    url = /^http[s]?:/.test(url) ? url : commonLib.url(url);
+
+    headers = headers ?? {};
+    headers[csrfHeader] = csrfToken;
+    method = method.toUpperCase();
+
+    const options = {
+        method,
+        headers,
+    }
+
+    if (data && ['POST', 'PUT', 'PATCH'].includes(method)) { // body 쪽 데이터 추가 가능
+        options.body = data instanceof FormData ? data : JSON.stringify(data);
+    }
+
+    return new Promise((resolve, reject) => {
+        fetch(url, options)
+            .then(res => {
+                if (res.status !== 204)
+                    return isText ? res.text() : res.json();
+                else {
+                    resolve();
+                }
+            })
+            .then(json => {
+                if (isText) {
+                    resolve(json);
+                    return;
+                }
+
+                if (json?.success) { // 응답 성공(처리 성공)
+                   if (typeof callback === 'function') { // 콜백 함수가 정의된 경우
+                        callback(json.data);
+                   }
+
+                   resolve(json);
+
+                   return;
+                }
+
+                reject(json); // 처리 실패
+            })
+            .catch(err => {
+                console.error(err);
+
+                reject(err); // 응답 실패
+            });
+    }); // Promise
+};
+
+/**
+* 레이어 팝업
+*
+*/
+commonLib.popup = function(url, width = 350, height = 350, isAjax = false) {
+    /* 레이어팝업 요소 동적 추가 S */
+    const layerEls = document.querySelectorAll(".layer-dim, .layer-popup");
+    layerEls.forEach(el => el.parentElement.removeChild(el));
+
+    const layerDim = document.createElement("div");
+    layerDim.className = "layer-dim";
+
+    const layerPopup = document.createElement("div");
+    layerPopup.className = "layer-popup";
+
+    /* 레이어 팝업 가운데 배치 S */
+    const xpos = (innerWidth - width) / 2;
+    const ypos = (innerHeight - height) / 2;
+    layerPopup.style.left = xpos + "px";
+    layerPopup.style.top = ypos + "px";
+    layerPopup.style.width = width + "px";
+    layerPopup.style.height = height + "px";
+    /* 레이어 팝업 가운데 배치 E */
+
+    /* 레이어 팝업 컨텐츠 영역 추가 */
+    const content = document.createElement("div");
+    content.className="layer-content";
+    layerPopup.append(content);
+
+    /* 레이어 팝업 닫기 버튼 추가 S */
+    const button = document.createElement("button");
+    const icon = document.createElement("i");
+    button.className = "layer-close";
+    button.type = "button";
+    icon.className = "xi-close";
+    button.append(icon);
+    layerPopup.prepend(button);
+
+    button.addEventListener("click", commonLib.popupClose);
+    /* 레이어 팝업 닫기 버튼 추가 E */
+
+    document.body.append(layerPopup);
+    document.body.append(layerDim);
 
 
-        <div class="table-action" data-form-name="frmList">
-            선택 회원을 <button type="button" class="sbtn modify">수정하기</button>
-        </div>
-    </form>
+    /* 레이어팝업 요소 동적 추가 E */
 
-    <th:block th:replace="~{common/_pagination::pagination}"></th:block>
-</div>
-</html>
+    /* 팝업 컨텐츠 로드 S */
+    if (isAjax) { // 컨텐트를 ajax로 로드
+        const { ajaxLoad } = commonLib;
+        ajaxLoad(url, null, 'GET', null, null, true)
+            .then((text) => content.innerHTML = text);
+
+    } else { // iframe으로 로드
+        const iframe = document.createElement("iframe");
+        iframe.width = width - 80;
+        iframe.height = height - 80;
+        iframe.frameBorder = 0;
+        iframe.src = commonLib.url(url);
+        content.append(iframe);
+    }
+    /* 팝업 컨텐츠 로드 E */
+}
+
+/**
+* 레이어팝업 제거
+*
+*/
+commonLib.popupClose = function() {
+    const layerEls = document.querySelectorAll(".layer-dim, .layer-popup");
+    layerEls.forEach(el => el.parentElement.removeChild(el));
+};
+
+/**
+* 위지윅 에디터 로드
+*
+*/
+commonLib.loadEditor = function(id, height = 350) {
+
+    if (typeof ClassicEditor === 'undefined' || !id) {
+        return;
+    }
+
+    return new Promise((resolve, reject) => {
+        (async() => {
+            try {
+                const editor = await ClassicEditor.create(document.getElementById(id));
+                resolve(editor);
+                editor.editing.view.change((writer) => {
+                    writer.setStyle(
+                           "height",
+                           `${height}px`,
+                           editor.editing.view.document.getRoot()
+                        );
+                });
+
+            } catch (err) {
+                console.error(err);
+
+                reject(err);
+            }
+        })();
+    });
+
+};
+
+window.addEventListener("DOMContentLoaded", function() {
+    // 체크박스 전체 토글 기능 S
+    const checkAlls = document.getElementsByClassName("check-all");
+    for (const el of checkAlls) {
+        el.addEventListener("click", function() {
+            const { targetClass } = this.dataset;
+            if (!targetClass) { // 토클할 체크박스의 클래스가 설정되지 않은 경우는 진행 X
+                return;
+            }
+
+            const chks = document.getElementsByClassName(targetClass);
+            for (const chk of chks) {
+                chk.checked = this.checked;
+            }
+        });
+    }
+    // 체크박스 전체 토글 기능 E
+
+    // 팝업 버튼 클릭 처리 S
+    const showPopups = document.getElementsByClassName("show-popup");
+    for (const el of showPopups) {
+        el.addEventListener("click", function() {
+            const { url, width, height } = this.dataset;
+            commonLib.popup(url, width, height);
+        });
+    }
+    // 팝업 버튼 클릭 처리 E
+});

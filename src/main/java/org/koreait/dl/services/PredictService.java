@@ -26,7 +26,7 @@ public class PredictService {
     @Autowired
     private ObjectMapper om;
 
-    public int[] predict(List<int[]> items){
+    public int[] predict(List<int[]> items) {
         try {
             String data = om.writeValueAsString(items);
 
@@ -34,9 +34,11 @@ public class PredictService {
             Process process = builder.start();
             InputStream in = process.getInputStream();
             return om.readValue(in.readAllBytes(), int[].class);
-        }catch (Exception e){
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
 }
