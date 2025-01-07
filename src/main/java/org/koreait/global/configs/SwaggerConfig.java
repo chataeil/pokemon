@@ -6,11 +6,11 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@OpenAPIDefinition(info = @Info(title = "포켓몬 도감 API", description = "/api.file - 파일 API"))
+@OpenAPIDefinition(info=@Info(title="포켓몬 도감 API", description = "/api/file - 파일 API"))
 @Configuration
-public class SwaggerConfig { //Restful api 문서화하고 테스트 할 수 있게 해주는 도구
+public class SwaggerConfig {
     @Bean
-    public GroupedOpenApi openApiGroup(){
+    public GroupedOpenApi openApiGroup() {
         return GroupedOpenApi.builder()
                 .group("포켓몬 도감 API")
                 .pathsToMatch("/api/**")

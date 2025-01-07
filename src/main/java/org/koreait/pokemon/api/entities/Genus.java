@@ -8,5 +8,4 @@ import lombok.Data;
 public class Genus {
     private String genus;
     private UrlItem language;
-
 }

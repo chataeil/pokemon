@@ -30,7 +30,7 @@ public class Utils {
         String pattern = ".*(iPhone|iPod|iPad|BlackBerry|Android|Windows CE|LG|MOT|SAMSUNG|SonyEricsson).*";
 
 
-        return StringUtils.hasText(ua)&& ua.matches(pattern);
+        return StringUtils.hasText(ua) && ua.matches(pattern);
     }
 
     /**
@@ -43,7 +43,6 @@ public class Utils {
         String prefix = isMobile() ? "mobile" : "front";
 
         return String.format("%s/%s", prefix, path);
-
     }
 
     /**
@@ -55,18 +54,18 @@ public class Utils {
     public String getMessage(String code) {
         Locale lo = request.getLocale(); // 사용자 요청 헤더(Accept-Language)
 
-        return messageSource.getMessage(code, null, lo); // 코드 상에서도 메세지 형태로 사용 하기 때문.
+        return messageSource.getMessage(code, null, lo);
     }
 
     public List<String> getMessages(String[] codes) {
 
-        return Arrays.stream(codes).map(c -> {
-            try {
-                return getMessage(c);
-            } catch (Exception e) {
-                return "";
-            }
-        }).filter(s -> !s.isBlank()).toList();
+            return Arrays.stream(codes).map(c -> {
+                try {
+                    return getMessage(c);
+                } catch (Exception e) {
+                    return "";
+                }
+            }).filter(s -> !s.isBlank()).toList();
 
     }
 
@@ -77,7 +76,7 @@ public class Utils {
      * @return
      */
     public Map<String, List<String>> getErrorMessages(Errors errors) {
-        ResourceBundleMessageSource ms = (ResourceBundleMessageSource) messageSource; // 싱글톤 형태의 객체이기 때문에 변형 시키면 다른곳도 변형 됨, 그래서 변형 후 다시 원래대로 돌려야함.
+        ResourceBundleMessageSource ms = (ResourceBundleMessageSource) messageSource;
         ms.setUseCodeAsDefaultMessage(false);
         try {
             // 필드별 에러코드 - getFieldErrors()
@@ -89,11 +88,11 @@ public class Utils {
             // 글로벌 에러코드 - getGlobalErrors()
             List<String> gMessages = errors.getGlobalErrors()
                     .stream()
-                    .flatMap(o -> getMessages(o.getCodes()).stream()) // field와 messages를 코드로 가져왔다.
+                    .flatMap(o -> getMessages(o.getCodes()).stream())
                     .toList();
             // 글로벌 에러코드 필드 - global
             if (!gMessages.isEmpty()) {
-                messages.put("global", gMessages); // global이 비어있지 않으면 오류들을 global 이라는 키값에 포함
+                messages.put("global", gMessages);
             }
 
             return messages;
@@ -189,13 +188,17 @@ public class Utils {
     }
 
     /**
-     * 줄개행 문자(\n 또는 \r\n)를 br 태그로 변환
+     *  줄개행 문자(\n 또는 \r\n)를 br 태그로 변환
      *
      * @param text
      * @return
      */
-    public String nl2br(String text){
-        return text.replaceAll("\\r", "")
-                .replaceAll("\\n", "<br>");
+    public String nl2br(String text) {
+        return text == null ? "" : text.replaceAll("\\r", "")
+                                        .replaceAll("\\n", "<br>");
+    }
+
+    public String popup(String url, int width, int height) {
+        return String.format("commonLib.popup('%s', %d, %d);", url, width, height);
     }
 }

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.paging.ListData;
 import org.koreait.global.paging.Pagination;
+import org.koreait.mypokemon.services.MyPokemonService;
 import org.koreait.pokemon.controllers.PokemonSearch;
 import org.koreait.pokemon.entities.Pokemon;
 import org.koreait.pokemon.entities.QPokemon;
@@ -22,10 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.data.domain.Sort.Order.asc;
 
@@ -39,6 +37,7 @@ public class PokemonInfoService {
     private final Utils utils;
     private final JPAQueryFactory queryFactory;
     private final WishService wishService;
+    private final MyPokemonService pokemonService;
 
     /**
      * 포켓몬 목록 조회
@@ -61,12 +60,14 @@ public class PokemonInfoService {
                     .concat(pokemon.nameEn)
                     .concat(pokemon.flavorText).contains(skey));
         }
+
         List<Long> seq = search.getSeq();
-        if (seq != null && !seq.isEmpty()){
-            andBuilder.and(pokemon.seq.in(seq)); // in == seq가 값 목록에 포함되어 있는지 확인 and연산
+        if (seq != null && !seq.isEmpty()) {
+            andBuilder.and(pokemon.seq.in(seq));
         }
+
         /* 검색 처리 E */
-        // 반환값은 무적권 page
+
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(asc("seq")));
 
         Page<Pokemon> data = pokemonRepository.findAll(andBuilder, pageable);
@@ -80,10 +81,11 @@ public class PokemonInfoService {
 
         return new ListData<>(items, pagination);
     }
+
     // 내가 찜한 포켓몬 목록
     public ListData<Pokemon> getMyPokemons(PokemonSearch search) {
         List<Long> seq = wishService.getMyWish(WishType.POKEMON);
-        if (seq == null || seq.isEmpty()){
+        if (seq == null || seq.isEmpty()) {
             return new ListData<>();
         }
 
@@ -91,7 +93,31 @@ public class PokemonInfoService {
 
         return getList(search);
     }
+    public List<Pokemon> getMyList(PokemonSearch search) {
 
+        QPokemon pokemon = QPokemon.pokemon;
+
+        List<Pokemon> items = queryFactory.selectFrom(pokemon)
+                .fetch();
+
+//        List<Pokemon> items = pokemonRepository.findAll();
+
+        // 추가 정보 처리
+        items.forEach(this::addInfo);
+
+        return items; // 단순히 조회된 목록을 반환
+    }
+
+    public List<Pokemon> getMyEntity(PokemonSearch search){
+        List<Long> seq = pokemonService.getMyPokemon();
+        if (seq == null || seq.isEmpty()) {
+            return new ArrayList<>();
+        }
+        search.setSeq(seq);
+
+        // 단순 조회만 하도록 getMyList를 호출
+        return getMyList(search);
+    }
     /**
      * 포켓몬 단일 조회
      *
@@ -127,7 +153,7 @@ public class PokemonInfoService {
         }
     }
 
-    private void addInfo(Pokemon item, boolean isView){
+    private void addInfo(Pokemon item, boolean isView) {
         addInfo(item);
         if (!isView) return;
 
@@ -144,24 +170,28 @@ public class PokemonInfoService {
         nextSeq = nextSeq > lastSeq ? 1L : nextSeq;
 
         QPokemon pokemon = QPokemon.pokemon;
-        List<Pokemon> items = (List<Pokemon>) pokemonRepository.findAll(pokemon.seq.in(prevSeq, nextSeq));
+        List<Pokemon> items = (List<Pokemon>)pokemonRepository.findAll(pokemon.seq.in(prevSeq, nextSeq));
 
         Map<String, Object> prevItem = new HashMap<>();
         Map<String, Object> nextItem = new HashMap<>();
-        for (int i =0; i < items.size(); i++){
+        for (int i = 0; i < items.size(); i++) {
             Pokemon _item = items.get(i);
-            Map<String, Object> data =_item.getSeq().longValue() == prevSeq ? prevItem : nextItem;
+
+            Map<String, Object> data = _item.getSeq().longValue() == prevSeq ? prevItem : nextItem;
             data.put("seq", _item.getSeq());
             data.put("name", _item.getName());
             data.put("nameEn", _item.getNameEn());
         }
+
         item.setPrevItem(prevItem);
         item.setNextItem(nextItem);
     }
-    private Long getLastSeq(){
+
+    private Long getLastSeq() {
         QPokemon pokemon = QPokemon.pokemon;
+
         return queryFactory.select(pokemon.seq.max())
-                .from(pokemon)
-                .fetchFirst();
+                    .from(pokemon)
+                    .fetchFirst();
     }
 }

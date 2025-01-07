@@ -6,6 +6,9 @@ import org.koreait.member.constants.Authority;
 
 @Data
 public class RequestBoard {
+
+    private String mode;
+
     @NotBlank
     private String bid; // 게시판 아이디
 
@@ -13,9 +16,8 @@ public class RequestBoard {
     private String name; // 게시판 명
 
     private boolean open;
-    private String mode;
-    private String category; // 줄개행 문자로 여러 분류를 등록
-    private int rowsPerPage; // 1페이지당 게시글 갯수
+    private String category;  // 줄개행 문자로 여러 분류를 등록
+    private int rowsPerPage; // 1페이지당 게시글 갯수 
     private int pageRanges; // front 뷰일때 노출되는 페이지 링크 갯수
     private int pageRangesMobile; // mobile 뷰일때 노출되는 페이지 링크 갯수
     private boolean useEditor; // 에디터 사용 여부
@@ -31,8 +33,7 @@ public class RequestBoard {
      */
     private Authority listAuthority; // 목록 접근 권한
     private Authority viewAuthority; // 글보기 접근 권한
-    private Authority writeAuthority; // 글쓰기, 수정. 삭제 권한
+    private Authority writeAuthority; // 글쓰기, 수정, 삭제 권한
     private Authority commentAuthority; // 댓글 작성 권한
-
 
 }

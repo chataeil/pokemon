@@ -46,6 +46,7 @@ public class EmailAuthService {
         session.setAttribute("authCode", authCode);
         session.setAttribute("expiredTime", expired);
         session.setAttribute("authCodeVerified", false);
+
         Map<String, Object> tplData = new HashMap<>();
         tplData.put("authCode", authCode);
 
@@ -66,19 +67,19 @@ public class EmailAuthService {
             throw new BadRequestException(utils.getMessage("NotBlank.authCode"));
         }
 
-        LocalDateTime expired = (LocalDateTime) session.getAttribute("expiredTime");
-        Integer authCode = (Integer) session.getAttribute("authCode");
-        // Integer -> intValue() -> int
+        LocalDateTime expired = (LocalDateTime)session.getAttribute("expiredTime");
+        Integer authCode = (Integer)session.getAttribute("authCode");
+
 
         if (expired != null && expired.isBefore(LocalDateTime.now())) { // 코드가 만료된 경우
             throw new AuthCodeExpiredException();
         }
 
-        if (authCode == null){
+        if (authCode == null) {
             throw new BadRequestException();
         }
 
-        if (!code.equals(authCode)) { // 인증 코드가 일치하지 않는 경우
+        if (!code.equals(authCode)) {
             throw new AuthCodeMismatchException();
         }
 

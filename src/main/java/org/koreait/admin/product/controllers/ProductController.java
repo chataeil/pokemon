@@ -162,18 +162,21 @@ public class ProductController implements SubMenus {
 
         List<String> addCommonScript = new ArrayList<>();
         List<String> addScript = new ArrayList<>();
+
         String pageTitle = "";
 
-        if (mode.equals("list")){
+        if (mode.equals("list")) {
             pageTitle = "상품목록";
-        } else if (mode.equals("add") || mode.equals("edit")){
+        } else if (mode.equals("add") || mode.equals("edit")) {
             pageTitle = mode.equals("edit") ? "상품수정" : "상품등록";
-            addCommonScript.add("fileManger");
-            addCommonScript.add("ckeditor.js.map");
+            addCommonScript.add("fileManager");
+            addCommonScript.add("ckeditor5/ckeditor");
             addScript.add("product/product");
-        } else if (mode.equals("category")){
+
+        } else if (mode.equals("category")) {
             pageTitle = "분류관리";
-        }else if (mode.equals("delivery")){
+
+        } else if (mode.equals("delivery")) {
             pageTitle = "배송정책관리";
         }
 
@@ -181,7 +184,7 @@ public class ProductController implements SubMenus {
 
         model.addAttribute("pageTitle", pageTitle);
         model.addAttribute("addCommonScript", addCommonScript);
-        model.addAttribute("addSCript", addScript);
+        model.addAttribute("addScript", addScript);
         model.addAttribute("subMenuCode", mode);
     }
 }

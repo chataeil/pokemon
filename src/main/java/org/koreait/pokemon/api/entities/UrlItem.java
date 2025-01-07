@@ -8,5 +8,4 @@ import lombok.Data;
 public class UrlItem {
     private String name;
     private String url;
-
 }

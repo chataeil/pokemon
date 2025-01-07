@@ -21,32 +21,32 @@ public class MemberInfo implements UserDetails {
     private Member member;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() { // 권한 가지고 오는거
-       return authorities;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override
-    public String getPassword() { // 비밀번호
+    public String getPassword() {
         return password;
     }
 
     @Override
-    public String getUsername() { // 유저 이름 ID
+    public String getUsername() {
         return email;
     }
 
     @Override
-    public boolean isAccountNonExpired() { // 계정 만료 여부.
-        return true;
-    }
-
-    @Override 
-    public boolean isAccountNonLocked() { // 계정 잠기 여부.
+    public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
-    public boolean isCredentialsNonExpired() { // 비밀번호 변경 시점.
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
         LocalDateTime credentialChangedAt = member.getCredentialChangedAt();
         return credentialChangedAt != null &&
                 credentialChangedAt.isAfter(LocalDateTime.now().minusMonths(1L));
@@ -55,5 +55,5 @@ public class MemberInfo implements UserDetails {
     @Override
     public boolean isEnabled() { // 회원 탈퇴 여부
         return member.getDeletedAt() == null;
-    } // 회원 탈퇴 여부
+    }
 }

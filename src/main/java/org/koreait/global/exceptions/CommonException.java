@@ -13,12 +13,12 @@ import java.util.Objects;
  *
  */
 @Getter @Setter
-public class CommonException extends RuntimeException{
+public class CommonException extends RuntimeException {
     private HttpStatus status;
     private boolean errorCode;
     private Map<String, List<String>> errorMessages;
 
-    public CommonException(String message, HttpStatus status){
+    public CommonException(String message, HttpStatus status) {
         super(message);
         this.status = Objects.requireNonNullElse(status, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -28,7 +28,7 @@ public class CommonException extends RuntimeException{
      * @param errorMessages
      * @param status
      */
-    public CommonException(Map<String, List<String>> errorMessages, HttpStatus status){
+    public CommonException(Map<String, List<String>> errorMessages, HttpStatus status) {
         this.errorMessages = errorMessages;
         this.status = status;
     }

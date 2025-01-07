@@ -41,12 +41,12 @@ public class CommonInterceptor implements HandlerInterceptor {
     }
 
     /* 회원 프로필 설정 */
-    private void setProfile(ModelAndView mv){
-        if (mv == null || !memberUtil.isLogin()){
+    private void setProfile(ModelAndView mv) {
+        if (mv == null || !memberUtil.isLogin()) {
             return;
         }
 
         mv.addObject("profile", memberUtil.getMember());
-        mv.addObject("totalUnRead",messageInfoService.totalUnRead()); // 미열람 쪽지 갯수
+        mv.addObject("totalUnRead", messageInfoService.totalUnRead()); // 미열람 쪽지 갯수
     }
 }

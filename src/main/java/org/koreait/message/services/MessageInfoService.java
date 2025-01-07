@@ -37,7 +37,7 @@ public class MessageInfoService {
 
     /**
      * 쪽지 하나 조회
-     *
+     * 
      * @param seq
      * @return
      */
@@ -53,10 +53,10 @@ public class MessageInfoService {
             BooleanBuilder andBuilder = new BooleanBuilder();
 
             orBuilder2.or(andBuilder.and(message.notice.eq(true)).and(message.receiver.isNull()))
-                    .or(message.receiver.eq(member));
+                            .or(message.receiver.eq(member));
 
             orBuilder.or(message.sender.eq(member))
-                    .or(orBuilder2);
+                            .or(orBuilder2);
 
 
             builder.and(orBuilder);
@@ -72,7 +72,7 @@ public class MessageInfoService {
 
     /**
      * 쪽지 목록 조회 
-     *
+     * 
      * @param search
      * @return
      */
@@ -153,7 +153,7 @@ public class MessageInfoService {
         Member member = memberUtil.getMember();
         item.setReceived(
                 (item.isNotice() && item.getReceiver() == null) ||
-                        item.getReceiver().getSeq().equals(member.getSeq())
+                item.getReceiver().getSeq().equals(member.getSeq())
         );
 
         // 삭제 가능 여부

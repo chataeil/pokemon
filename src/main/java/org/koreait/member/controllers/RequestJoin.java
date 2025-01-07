@@ -21,7 +21,7 @@ public class RequestJoin extends RequestAgree {
     private String name; // 회원명
 
     @NotBlank
-    @Size(min = 8, max = 20)
+    @Size(min=8)
     private String password; // 비밀번호
 
     @NotBlank

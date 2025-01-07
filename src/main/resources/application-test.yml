@@ -14,7 +14,8 @@ spring:
   jpa:
     hibernate:
       ddlAuto: update
-#파일 업로드 경로
+
+# 파일 업로드 경로
 file:
   upload.path: D:/uploads/
   upload.url: /uploads/

@@ -29,7 +29,7 @@ public class ApiUpdateService {
     public void update(int page) {
         int limit = 100;
         //int limit = 3;
-        int offset = (page - 1) * limit; // 시작 레코드 번호, 0, 100, ...
+        int offset = (page - 1) * limit; // 시작 레코드 번호, 0, 100, ..
         String url = String.format("https://pokeapi.co/api/v2/pokemon?offset=%d&limit=%d", offset, limit);
         ApiResponse response = tpl.getForObject(URI.create(url), ApiResponse.class);
         List<UrlItem> items = response.getResults();
@@ -74,16 +74,14 @@ public class ApiUpdateService {
             pokemon.setFlavorText(flavorText);
 
             // 포켓몬 분류
-        String genus = data2.getGenera().stream()
-                .filter(d -> d.getLanguage().getName().equals("ko"))
-                        .map(d -> d.getGenus()).collect(Collectors.joining());
-        pokemon.setGenus(genus);
+            String genus = data2.getGenera().stream()
+                    .filter(d -> d.getLanguage().getName().equals("ko"))
+                            .map(d -> d.getGenus()).collect(Collectors.joining());
+            pokemon.setGenus(genus);
 
-        pokemons.add(pokemon);
-
+            pokemons.add(pokemon);
         }
         /* 상세 정보 처리 E */
-
 
         // DB 영구 저장 처리
         repository.saveAllAndFlush(pokemons);

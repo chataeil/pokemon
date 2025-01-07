@@ -49,7 +49,7 @@ public class BoardConfigInfoService {
         return item;
     }
 
-    public RequestBoard getForm(String bid){
+    public RequestBoard getForm(String bid) {
         Board item = get(bid);
 
         RequestBoard form = modelMapper.map(item, RequestBoard.class);
@@ -57,15 +57,15 @@ public class BoardConfigInfoService {
 
         return form;
     }
+
     /**
      * 게시판 설정 목록
-     *
+     * 
      * @param search
      * @return
      */
-
-    public ListData<Board> getList(BoardConfigSearch search){
-        int page = Math.max(search.getPage(),1);
+    public ListData<Board> getList(BoardConfigSearch search) {
+        int page = Math.max(search.getPage(), 1);
         int limit = search.getLimit();
         limit = limit < 1 ? 20 : limit;
 
@@ -76,26 +76,26 @@ public class BoardConfigInfoService {
         String sopt = search.getSopt();
         String skey = search.getSkey();
         sopt = StringUtils.hasText(sopt) ? sopt : "ALL";
-        if (StringUtils.hasText(skey) ){
+        if (StringUtils.hasText(skey)) {
             StringExpression condition;
             if (sopt.equals("BID")) { // 게시판 아이디
                 condition = board.bid;
             } else if (sopt.equals("NAME")) { // 게시판명
                 condition = board.name;
-            }else { // 통합 검색 - 게시판 아이디 + 게시판명
+            } else { // 통합 검색 - 게시판 아이디 + 게시판명
                 condition = board.bid.concat(board.name);
             }
+
             andBuilder.and(condition.contains(skey.trim()));
         }
 
         List<String> bids = search.getBid();
-        if (bids != null && !bids.isEmpty()){
+        if (bids != null && !bids.isEmpty()) {
             andBuilder.and(board.bid.in(bids));
         }
-
         /* 검색 처리 E */
-        Pageable pageable = PageRequest.of(page-1,limit, Sort.by(desc("createdAt")));
 
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(desc("createdAt")));
         Page<Board> data = boardRepository.findAll(andBuilder, pageable);
 
         List<Board> items = data.getContent();
@@ -107,9 +107,9 @@ public class BoardConfigInfoService {
     }
 
     // 추가 정보처리
-    private void addInfo(Board item){
+    private void addInfo(Board item) {
         String category = item.getCategory();
-        if (StringUtils.hasText(category)){
+        if (StringUtils.hasText(category)) {
             List<String> categories = Arrays.stream(category.split("\\n"))
                     .map(s -> s.replaceAll("\\r", ""))
                     .filter(s -> !s.isBlank())

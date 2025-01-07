@@ -8,5 +8,4 @@ import lombok.Data;
 public class Names {
     private UrlItem language;
     private String name;
-
 }

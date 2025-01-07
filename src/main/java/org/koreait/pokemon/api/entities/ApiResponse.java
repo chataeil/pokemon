@@ -10,6 +10,4 @@ public class ApiResponse {
     private String next;
     private String previous;
     private List<UrlItem> results;
-
-
 }

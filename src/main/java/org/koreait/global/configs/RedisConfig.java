@@ -17,9 +17,10 @@ public class RedisConfig {
     private int port;
 
     @Bean
-    public RedisConnectionFactory redisConnectionFactory(){
+    public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(host, port);
-    } // 직렬화 구현체
+    }
+
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {
         RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();

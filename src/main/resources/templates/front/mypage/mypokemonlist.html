@@ -3,6 +3,11 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{front/layouts/mypage}">
 <section layout:fragment="content">
-    <h1 th:text="#{마이페이지}"></h1>
+    <h1 th:text="#{나의_ENTRY}"></h1>
+
+    <div class="bag">
+        <div th:each="index : ${#numbers.sequence(1, 6)}" class="poke" th:id="'poke' + ${index}">
+        </div>
+    </div>
 </section>
 </html>

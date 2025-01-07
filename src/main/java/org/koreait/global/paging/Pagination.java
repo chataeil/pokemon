@@ -35,11 +35,11 @@ public class Pagination {
      * @param limit : 한 페이지당 출력될 레코드 갯수
      */
     public Pagination(int page, int total, int ranges, int limit) {
-        this(page,total,ranges,limit, null);
+        this(page, total, ranges, limit, null);
     }
 
     public Pagination(int page, int total, int ranges, int limit, HttpServletRequest request) {
-        // 페이지 기본값 처리
+        // 페이징 기본값 처리
         page = Math.max(page, 1);
         total = Math.max(total, 0);
         ranges = ranges < 1 ? 10 : ranges;
@@ -48,7 +48,8 @@ public class Pagination {
         if (total == 0) {
             return;
         }
-        // 전체 페이지 갯수 올림 처리 정수는 정수만 나오기 때문에 실수 처리 해줘야 함.
+
+        // 전체 페이지 갯수
         int totalPages = (int)Math.ceil(total / (double)limit);
 
         // 구간 번호 - 0, 1, 2
@@ -58,31 +59,31 @@ public class Pagination {
         lastRangePage = Math.min(lastRangePage, totalPages);
 
         int prevRangeLastPage = 0, nextRangeFirstPage = 0; // 이전 구간 시작 페이지 번호, 다음 구간 시작 페이지 번호
-        if (rangeCnt > 0 ){
+        if (rangeCnt > 0) {
             prevRangeLastPage = firstRangePage - 1;
         }
-        //마지막 페이지 구간
-        int lastRangeCnt = (totalPages - 1)/ ranges;
-        if (rangeCnt < lastRangeCnt){
+
+        // 마지막 페이지 구간
+        int lastRangeCnt = (totalPages - 1) / ranges;
+        if (rangeCnt < lastRangeCnt) {
             nextRangeFirstPage = (rangeCnt + 1) * ranges + 1;
         }
 
         /* 쿼리스트링 값 처리 S */
-        String qs = request.getQueryString();
-        baseUrl = "?"; //?는 항상 있어야 하니까
-        if (StringUtils.hasText(qs)){ // qs가 비어있지 않거나 null이 아닐때
+        String qs = request == null ? "" : request.getQueryString();
+        baseUrl = "?";
+        if (StringUtils.hasText(qs)) {
             baseUrl += Arrays.stream(qs.split("&"))
-                    .filter(s -> !s.contains("page="))
+                        .filter(s -> !s.contains("page="))
                     .collect(Collectors.joining("&")) + "&";
         }
-        baseUrl += "page="; // 쿼리스트링 뒤에만 넣고 없을대 page=만 넣음.
-
-        System.out.println(request.getQueryString());
+        baseUrl += "page=";
         /* 쿼리스트링 값 처리 E */
+
         this.page = page;
-        this.total = total;
         this.ranges = ranges;
         this.limit = limit;
+        this.total = total;
         this.totalPages = totalPages;
         this.firstRangePage = firstRangePage;
         this.lastRangePage = lastRangePage;
@@ -94,15 +95,14 @@ public class Pagination {
      * String 배열의 0번째 - 페이지 번호 숫자, 1번째 - 페이지 URL
      * @return
      */
-
-    public List<String[]> getPages(){
-        if (total == 0){
-            return Collections.EMPTY_LIST; // 비어잇는 리스트(빈 페이지) null값으로 하면 오류남
+    public List<String[]> getPages() {
+        if (total == 0) {
+            return Collections.EMPTY_LIST;
         }
 
         List<String[]> pages = new ArrayList<>();
-        for (int i = firstRangePage; i <= lastRangePage; i++){
-            String url = baseUrl + i;
+        for (int i = firstRangePage; i <= lastRangePage; i++) {
+            String url =  baseUrl + i;
             pages.add(new String[] {"" + i, url});
         }
 

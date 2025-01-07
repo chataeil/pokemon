@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 @Data
-@JsonIgnoreProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FlavorText {
     @JsonAlias("flavor_text")
     private String flavorText;

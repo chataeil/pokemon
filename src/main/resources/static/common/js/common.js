@@ -140,7 +140,7 @@ commonLib.popup = function(url, width = 350, height = 350, isAjax = false, messa
     } else if (message) { // 메세지 팝업
         content.innerHTML = `<div class='message'>
                                 <i class='xi-info'></i>
-                                {message}
+                                ${message}
                              </div>`;
     } else { // iframe으로 로드
         const iframe = document.createElement("iframe");
@@ -152,13 +152,15 @@ commonLib.popup = function(url, width = 350, height = 350, isAjax = false, messa
     }
     /* 팝업 컨텐츠 로드 E */
 }
+
 /**
 * 메세지 출력 팝업
 *
 */
-commonLib.message = function(message, width = 350, height =200){
-    commonLib.popup(null, width = 350, height =350, isAjax = false, message)
+commonLib.message = function(message, width = 350, height = 200) {
+    commonLib.popup(null, width, height, false, message);
 };
+
 /**
 * 레이어팝업 제거
 *

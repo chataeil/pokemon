@@ -9,14 +9,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class MemberUtil {
 
     @Autowired
     private HttpSession session;
 
-    public boolean isLogin(){
+    public boolean isLogin() {
         return getMember() != null;
     }
 
@@ -25,30 +24,31 @@ public class MemberUtil {
      *  권한 - MANAGER, ADMIN
      * @return
      */
-    public boolean isAdmin(){
-        return isLogin() &&
-                getMember().getAuthorities().stream()
-                        .anyMatch(a -> a.getAuthority() == Authority.ADMIN || a.getAuthority() == Authority.MANGER);
+    public boolean isAdmin() {
+         return isLogin() &&
+                    getMember().getAuthorities().stream()
+                            .anyMatch(a -> a.getAuthority() == Authority.ADMIN || a.getAuthority() == Authority.MANAGER);
     }
+
     /**
      * 로그인 한 회원의 정보 조회
      *
      * @return
      */
-    public Member getMember(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication(); //★auth 핵심★ 인증을 해야 만들어짐. 인증된 객체 현재 로그인한 놈 정보
-        if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof
-                MemberInfo memberInfo){
-            Member member = (Member) session.getAttribute("member");
-            if (member == null){
-               member = memberInfo.getMember();
-               session.setAttribute("member", member);
+    public Member getMember() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof MemberInfo memberInfo) {
+            Member member = (Member)session.getAttribute("member");
+            if (member == null) {
+                member = memberInfo.getMember();
+                session.setAttribute("member", member);
+
                 return member;
             } else {
                 return member;
             }
         }
 
-            return null;
+        return null;
     }
 }

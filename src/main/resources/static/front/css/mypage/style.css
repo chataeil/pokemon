@@ -1,11 +1,9 @@
 /* 마이페이지 레이아웃 S */
-main{
+main {
     display: flex;
     padding: 40px 0 100px;
 }
-main.layout-width {
-     margin: 40px auto 100px;
-}
+
 
 main > aside {
     width: 200px;
@@ -15,10 +13,11 @@ main > section {
     flex-grow: 1;
     padding: 30px;
 }
+
 main > aside > a {
     display: block;
     height: 45px;
-    line-height: 43px;
+    line-height: 44px;
 }
 
 main > aside > a + a {
@@ -32,3 +31,20 @@ main > aside > a + a {
     height: 300px;
     border: 2px solid #000;
 }
+/* 마이포켓몬 레이아웃 S */
+.bag {
+    display: grid;
+    grid-template-columns: repeat(2, 0fr);
+    justify-content: center;
+    width: 50%;
+    margin: 0 auto;
+}
+
+.poke {
+    width: 300px;
+    height: 300px;
+    border: 1px solid #000;
+    border-radius: 150px;
+    margin: 10px 10px;
+}
+/* 마이포켓몬 레이아웃 E */

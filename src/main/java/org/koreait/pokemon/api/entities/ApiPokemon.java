@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true) // 일치하지 않으면 무시하고 넘어감 필요한것만 정의 하려고
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiPokemon {
     private int id;
     private String name;
@@ -16,7 +16,6 @@ public class ApiPokemon {
     private int height;
     private List<Types> types;
     private List<Ability> abilities;
-
 
     @JsonAlias("base_experience")
     private int baseExperience;
@@ -29,3 +28,4 @@ public class ApiPokemon {
 
     private List<Genus> genera;
 }
+

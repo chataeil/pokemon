@@ -10,14 +10,11 @@ import java.util.List;
 @Data
 @Entity
 public class Board extends BaseMemberEntity {
-
-    private String mode;
-
     @Id
-    @Column(length = 30)
+    @Column(length=30)
     private String bid;
 
-    @Column(length = 90, nullable = false)
+    @Column(length=90, nullable = false)
     private String name; // 게시판명
 
     private boolean open;
@@ -37,19 +34,19 @@ public class Board extends BaseMemberEntity {
     private String skin;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
+    @Column(length=20, nullable = false)
     private Authority listAuthority;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
+    @Column(length=20, nullable = false)
     private Authority viewAuthority;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
+    @Column(length=20, nullable = false)
     private Authority writeAuthority;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
+    @Column(length=20, nullable = false)
     private Authority commentAuthority;
 
     @Transient

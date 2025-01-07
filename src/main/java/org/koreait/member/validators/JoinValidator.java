@@ -29,14 +29,12 @@ public class JoinValidator implements Validator, PasswordValidator {
 
     @Override
     public void validate(Object target, Errors errors) {
-
         // 커맨드 객체 검증 실패시에는 추가 검증은 진행 X
-        if (errors.hasErrors()){
-
+        if (errors.hasErrors()) {
             return;
         }
 
-        if (target instanceof RequestJoin requestJoin) {
+       if (target instanceof RequestJoin requestJoin) {
             validateJoin(requestJoin, errors);
         } else {
             validateAgree((RequestAgree)target, errors);
@@ -51,14 +49,17 @@ public class JoinValidator implements Validator, PasswordValidator {
      * @param errors
      */
     private void validateAgree(RequestAgree form, Errors errors) {
-    if(!form.isRequiredTerms1()){
-        errors.rejectValue("requiredTerms1", "AssertTrue");
-    }
-    if (!form.isRequiredTerms2()){
-        errors.rejectValue("requiredTerms2", "AssertTrue");
-    } if (!form.isRequiredTerms3()){
-        errors.rejectValue("requiredTerms3", "AssertTrue");
-    }
+        if (!form.isRequiredTerms1()) {
+            errors.rejectValue("requiredTerms1", "AssertTrue");
+        }
+
+        if (!form.isRequiredTerms2()) {
+            errors.rejectValue("requiredTerms2", "AssertTrue");
+        }
+
+        if (!form.isRequiredTerms3()) {
+            errors.rejectValue("requiredTerms3", "AssertTrue");
+        }
     }
 
     /**
@@ -67,8 +68,7 @@ public class JoinValidator implements Validator, PasswordValidator {
      * @param form
      * @param errors
      */
-    private void validateJoin(RequestJoin form, Errors errors)
-    {
+    private void validateJoin(RequestJoin form, Errors errors) {
 
         /**
          * 1. 이메일 중복 여부 체크
@@ -82,34 +82,35 @@ public class JoinValidator implements Validator, PasswordValidator {
         String password = form.getPassword();
         String confirmPassword = form.getConfirmPassword();
         LocalDate birthDt = form.getBirthDt();
+
         // 1. 이메일 중복 여부 체크
-        if (memberRepository.exists(email)){
+        if (memberRepository.exists(email)) {
             errors.rejectValue("email", "Duplicated");
         }
 
         // 2. 비밀번호 복잡성 S
-        if (!alphaCheck(password, false) || !numberCheck(password) || !specialCharsCheck(password)){
+        if (!alphaCheck(password, false) || !numberCheck(password) || !specialCharsCheck(password)) {
             errors.rejectValue("password", "Complexity");
         }
         // 2. 비밀번호 복잡성 E
 
-//        3. 비밀번호, 비밀번호 확인 일치 여부S
-        if (!password.equals(confirmPassword)){
+        // 3. 비밀번호, 비밀번호 확인 일치 여부 S
+        if (!password.equals(confirmPassword)) {
             errors.rejectValue("confirmPassword", "Mismatch");
         }
-//        3. 비밀번호, 비밀번호 확인 일치 여부E
+        // 3. 비밀번호, 비밀번호 확인 일치 여부 E
 
-//        4. 생년월일을 입력받으면 만 14세 이상만 가입 가능하게 통제S
-    Period period = Period.between(birthDt, LocalDate.now());
+        // 4. 생년월일을 입력받으면 만 14세 이상만 가입 가능하게 통제 S
+        Period period = Period.between(birthDt, LocalDate.now());
         int year = period.getYears();
-        if (year < 14){ // 만 14세 미만인 경우
+        if (year < 14) { // 만 14세 미만인 경우
             errors.rejectValue("birthDt", "UnderAge");
         }
-//        4. 생년월일을 입력받으면 만 14세 이상만 가입 가능하게 통제E
+        // 4. 생년월일을 입력받으면 만 14세 이상만 가입 가능하게 통제 E
 
         // 5. 이메일 인증 여부 체크
-        Boolean authCodeVerified = (boolean)session.getAttribute("authCodeVerified");
-        if (authCodeVerified == null || !authCodeVerified){
+        Boolean authCodeVerified = (Boolean)session.getAttribute("authCodeVerified");
+        if (authCodeVerified == null || !authCodeVerified) {
             errors.reject("NotVerified.authCode");
         }
     }

@@ -9,7 +9,10 @@ import org.koreait.pokemon.services.PokemonInfoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +25,6 @@ public class PokemonController {
 
     private final Utils utils;
     private final PokemonInfoService infoService;
-
-
 
     @GetMapping("/list")
     public String list(@ModelAttribute PokemonSearch search, Model model) {
@@ -59,12 +60,13 @@ public class PokemonController {
             addCss.add("pokemon/list"); // 목록쪽에만 적용되는 스타일
         } else if (mode.equals("view")) {
             addCss.add("pokemon/view"); // 상세쪽에만 적용되는 스타일
+
             // 상세 보기에서는 포켓몬 이름으로 제목을 완성
             Pokemon item = (Pokemon) model.getAttribute("item");
             if (item != null) {
                 pageTitle = String.format("%s - %s", item.getName(), pageTitle);
             }
-        } else
+        }
 
         model.addAttribute("pageTitle", pageTitle);
         model.addAttribute("addCss", addCss);

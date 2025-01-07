@@ -9,11 +9,11 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 public class MessageSourceConfig {
 
     @Bean
-    public MessageSource messageSource() { // 메세지 기능
+    public MessageSource messageSource() {
         ResourceBundleMessageSource ms = new ResourceBundleMessageSource();
         ms.addBasenames("messages.commons", "messages.validations", "messages.errors", "messages.pokemon");
         ms.setDefaultEncoding("UTF-8");
-        ms.setUseCodeAsDefaultMessage(true); // 없을때는 코드 형태로 출력.
+        ms.setUseCodeAsDefaultMessage(true);
 
         return ms;
     }

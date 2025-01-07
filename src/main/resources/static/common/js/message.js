@@ -7,17 +7,18 @@ webSocket.addEventListener("message", function(data) {
     const { item, totalUnRead } = JSON.parse(data.data);
     let isShow = false;
     if (item.notice || (email && email === item?.receiver?.email)) { // 공지사항
-        isShow = ture;
-    }
-    if  (isShow) { // 메세지 팝업
-        commonLib.message("쪽지가 왔습니다.");
+        isShow = true;
     }
 
-    if (totalUnRead > 0){
-        const badge = document.querySelector(".link-mypage .badge")
-        if (badge){
-        badge.innerText = totalUnRead;
-        badge.classList.remove("dn")
+    if (isShow) { // 메세지 팝업
+        commonLib.message("쪽지가 왔습니다.");
+    }
+    console.log(totalUnRead, JSON.parse(data.data));
+    if (totalUnRead > 0) {
+        const badge = document.querySelector(".link-mypage .badge");
+        if (badge) {
+            badge.innerText = totalUnRead;
+            badge.classList.remove("dn");
         }
     }
 });

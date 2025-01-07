@@ -13,10 +13,9 @@ public class DbConfig {
     @PersistenceContext
     private EntityManager em;
 
-    /*쿼리 dsl 기술 QueryDslPredicateExecutor 는 완전하지 않음. 복잡한 쿼리를 사용하기 위해서 직접 자세히 정의할땐 JPAQueryFactory 사용.*/
     @Lazy
     @Bean
-    public JPAQueryFactory jpaQueryFactory(){
+    public JPAQueryFactory jpaQueryFactory() {
         return new JPAQueryFactory(em);
     }
 }

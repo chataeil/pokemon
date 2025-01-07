@@ -7,6 +7,7 @@
     <form name="frmSend" method="POST" th:action="@{/message}" autocomplete="off" th:object="${requestMessage}">
         <div class="error global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
         <input type="hidden" name="gid" th:field="*{gid}">
+
         <dl th:if="${@memberUtil.isAdmin()}">
             <dt th:text="#{공지}"></dt>
             <dd>
@@ -19,7 +20,6 @@
             <dd>
                 <input type="text" name="email" th:field="*{email}">
                 <div class="error" th:each="err : ${#fields.errors('email')}" th:text="${err}"></div>
-            </dd>
             </dd>
         </dl>
         <dl>

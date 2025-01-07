@@ -24,8 +24,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.List;
 
-@Tag(name="파일 API", description = "파일 업로드, 조회, 다운로드, 삭제 기능 제공합니다.") // 같은 태그끼리 엮는거 swagger
-@RestController // REST API 응답을 JSON
+@Tag(name="파일 API", description = "파일 업로드, 조회, 다운로드, 삭제 기능 제공합니다.")
+@RestController
 @RequestMapping("/api/file")
 @RequiredArgsConstructor
 public class ApiFileController {
@@ -34,7 +34,7 @@ public class ApiFileController {
 
     private final FileUploadService uploadService;
 
-    private final FileDownloadService DownloadService;
+    private final FileDownloadService downloadService;
 
     private final FileInfoService infoService;
 
@@ -53,48 +53,48 @@ public class ApiFileController {
     @Parameters({
             @Parameter(name="gid", description = "파일 그룹 ID", required = true),
             @Parameter(name="location", description = "파일 그룹 내에서 위치 코드"),
-            @Parameter(name="file", description = "업로드 파일, 복수개 전송 가능", required = true) // 요청 명세 파라미터로 작성
+            @Parameter(name="file", description = "업로드 파일, 복수개 전송 가능", required = true)
     })
-    @ResponseStatus(HttpStatus.CREATED) //웹 브라우저 기준 요청 의도 명확하게 알기 위해서.
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/upload")
-    public JSONData upload(@RequestPart("file") MultipartFile[] files, @Valid RequestUpload form, Errors errors) { // 파일 데이터와 폼 데이터는 형태가 다르기 때문에 동시에 보내려고 Multifile[] 씀
-        if (errors.hasErrors()) { //errors 를 넣기 위해 작성된 메서드 .
-            throw new BadRequestException(utils.getErrorMessages(errors)); //CommonRestController 에서 조회함.
+    public JSONData upload(@RequestPart("file") MultipartFile[] files, @Valid RequestUpload form, Errors errors) {
+        if (errors.hasErrors()) {
+            throw new BadRequestException(utils.getErrorMessages(errors));
         }
 
         form.setFiles(files);
+
         /**
          * 단일 파일 업로드
          *      - 기 업로드된 파일을 삭제하고 새로 추가
          */
-        if (form.isSingle()){ // 만약 싱글파일이 맞다면. 김채원 사진 없어지고 원래 있던 파일 지운거. 싱글 파일이면 싱글톤이다.
+        if (form.isSingle()) {
             deleteService.deletes(form.getGid(), form.getLocation());
         }
 
-        List<FileInfo> uploadedFiles = uploadService.upload(form); // 이 정보를 가지고 완료처리 함.
+        List<FileInfo> uploadedFiles = uploadService.upload(form);
 
         // 업로드 완료 하자마자 완료 처리
-        if (form.isDone()){
-            doneService.process(form.getGid(), form.getLocation()); // 업데이트가 완료 되자마자 완료 처리 하면 돈 프로세스에 gid랑 location 추가해서 올리자마자 완료처리
+        if (form.isDone()) {
+            doneService.process(form.getGid(), form.getLocation());
         }
+
         JSONData data = new JSONData(uploadedFiles);
-        data.setStatus(HttpStatus.CREATED); // 업로드 파일을 JSON 객체로 저장 후 반환
+        data.setStatus(HttpStatus.CREATED);
+
         return data;
     }
 
-    // 파일 다운로드 중요한건 응답 헤더에 대한 통제 출력의 흐름을 파일 이름으로 바꾸기 때문에 content-disposition 있어야댐.
+    // 파일 다운로드
     @GetMapping("/download/{seq}")
-    public void download(@PathVariable("seq") Long seq) // 파일 등록번호만 가지고 간단하게 구현되어 있음 주소에는 다운로드의 seq만 가지고 입력해도 파일이 다운될 수 있도록 만듦.
-    { // 가변 함.
-        DownloadService.process(seq);
+    public void download(@PathVariable("seq") Long seq) {
+        downloadService.process(seq);
     }
 
     // 파일 단일 조회
     @GetMapping("/info/{seq}")
-    public JSONData info(@PathVariable("seq") Long seq) { // 등록번호 가지고 조회
+    public JSONData info(@PathVariable("seq") Long seq) {
         FileInfo item = infoService.get(seq);
-
-
 
         return new JSONData(item);
     }
@@ -103,8 +103,7 @@ public class ApiFileController {
      * 파일 목록 조회
      * gid, location
      */
-
-    @GetMapping(path={"/list/{gid}", "/list/{gid}/{location}"}) // location은 필수가 아니기 때문에 잇는거 없는거 2개 넣음
+    @GetMapping(path={"/list/{gid}", "/list/{gid}/{location}"})
     public JSONData list(@PathVariable("gid") String gid,
                          @PathVariable(name="location", required = false) String location,
                          @RequestParam(name="status", defaultValue = "DONE") FileStatus status) {
@@ -116,7 +115,7 @@ public class ApiFileController {
 
     // 파일 단일 삭제
     @DeleteMapping("/delete/{seq}")
-    public JSONData delete(@PathVariable("seq") Long seq) { // {seq}를 Long 타입 seq로 쓰도록 함.
+    public JSONData delete(@PathVariable("seq") Long seq) {
 
         FileInfo item = deleteService.delete(seq);
 
@@ -124,30 +123,31 @@ public class ApiFileController {
     }
 
     @DeleteMapping({"/deletes/{gid}", "/deletes/{gid}/{location}"})
-    public JSONData deletes(@PathVariable("gid") String gid, // url 경로로 부터 전달받은 gid값 String 타입으로 선언됨.
+    public JSONData deletes(@PathVariable("gid") String gid,
                             @PathVariable(name="location", required = false) String location) {
 
         List<FileInfo> items = deleteService.deletes(gid, location);
+
         return new JSONData(items);
     }
+
     @GetMapping("/thumb")
-    public void thumb(RequestThumb form, HttpServletResponse response){
-        String path = thumbnailService.create(form); // 핵심 기능
-        if (!StringUtils.hasText(path)){ // 바로 출력할 수 있게 맞는 파일을 가져와서
+    public void thumb(RequestThumb form, HttpServletResponse response) {
+        String path = thumbnailService.create(form);
+        if (!StringUtils.hasText(path)) {
             return;
         }
+
         File file = new File(path);
         try (FileInputStream fis = new FileInputStream(file);
-             BufferedInputStream bis = new BufferedInputStream(fis)){
+             BufferedInputStream bis = new BufferedInputStream(fis)) {
 
-            String contentType = Files.probeContentType(file.toPath());// probeContentType 파일 경로만 보고 컨텐트 타입을 출력할 수 있는 편의기능
+            String contentType = Files.probeContentType(file.toPath());
             response.setContentType(contentType);
 
-            OutputStream out = response.getOutputStream(); // 바디 쪽에 출력해서 이미지를 바로 보여주는 형태.
+            OutputStream out = response.getOutputStream();
             out.write(bis.readAllBytes());
 
-        }catch (IOException e){
-
-        }
+        } catch (IOException e) {}
     }
 }

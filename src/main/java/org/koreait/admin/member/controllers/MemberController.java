@@ -138,7 +138,7 @@ public class MemberController implements SubMenus {
         } else if (mode.equals("message")) {
             pageTitle = "쪽지관리";
         }
-
+        
         pageTitle += " - 회원관리";
 
         model.addAttribute("pageTitle", pageTitle);
