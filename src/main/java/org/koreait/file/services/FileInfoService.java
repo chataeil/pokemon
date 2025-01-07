@@ -55,7 +55,7 @@ public class FileInfoService  {
             andBuilder.and(fileInfo.done.eq(status == FileStatus.DONE)); // 완료 상태일때만 true값 넣어서 완료에 대한 목록 조회를 요청했을때엔 비교해서 바로 DONE이 true일때 다른 사람이 조회가능하고 펄스면 조회불가
         }
 
-        List<FileInfo> items = (List<FileInfo>)infoRepository.findAll(andBuilder, Sort.by(asc("createdAt"))); // 파인드 올로 조회함 파일쪽은 올린 순서대로 보여야 하기 때문에 createAt을 오름차순으로 추가함.
+        List<FileInfo> items = (List<FileInfo>)infoRepository.findAll(andBuilder, Sort.by(asc("listOrder"),asc("createdAt"))); // 파인드 올로 조회함 파일쪽은 올린 순서대로 보여야 하기 때문에 createAt을 오름차순으로 추가함.
 
         // 추가 정보 처리
         items.forEach(this::addInfo); // 마지막에 추가 정보처리를 넣음 공윶
