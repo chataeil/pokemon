@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{front/layouts/main}">
-<main layout:fragment="content">
+      layout:decorate="~{front/layouts/mypage}">
+<section layout:fragment="content">
     <h1 th:text="#{쪽지_보내기}"></h1>
     <form name="frmSend" method="POST" th:action="@{/message}" autocomplete="off" th:object="${requestMessage}">
         <div class="error global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
-        <input type="hidden" name="email" th:field="*{email}">
         <input type="hidden" name="gid" th:field="*{gid}">
-
         <dl th:if="${@memberUtil.isAdmin()}">
             <dt th:text="#{공지}"></dt>
             <dd>
@@ -16,7 +14,14 @@
                 <label for="notice" th:text="#{전체_메세지}"></label>
             </dd>
         </dl>
-
+        <dl>
+            <dt th:text="#{이메일}"></dt>
+            <dd>
+                <input type="text" name="email" th:field="*{email}">
+                <div class="error" th:each="err : ${#fields.errors('email')}" th:text="${err}"></div>
+            </dd>
+            </dd>
+        </dl>
         <dl>
             <dt th:text="#{제목}"></dt>
             <dd>
@@ -59,5 +64,5 @@
         </div>
     </form>
     <script th:replace="~{common/_tpl_file::file-item}"></script>
-</main>
+</section>
 </html>

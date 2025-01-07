@@ -9,6 +9,7 @@
         <meta name="_csrf_header" th:content="${_csrf.headerName}">
         <meta name="rootUrl" th:content="@{/}">
 
+
         <title th:if="${pageTitle != null}" th:text="${pageTitle}"></title>
 
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
@@ -19,13 +20,14 @@
                   th:each="cssPath : ${addCommonCss}" th:href="@{/common/css/{path}.css(path=${cssPath})}">
         </th:block>
 
+        <th:block layout:fagment="addCommonCss"></th:block>
         <link rel="stylesheet" type="text/css" th:href="@{/admin/css/style.css}">
 
         <th:block th:if="${addCss != null}">
         <link rel="stylesheet" type="text/css" th:each="cssPath : ${addCss}"
               th:href="@{/admin/css/{path}.css(path=${cssPath})}">
         </th:block>
-
+        <th:block layout:fagment="addCss"></th:block>
         <script th:src="@{/common/js/common.js}"></script>
 
         <th:block th:if="${addCommonScript != null}">
@@ -33,12 +35,16 @@
                     th:src="@{/common/js/{path}.js(path=${jsPath})}"></script>
         </th:block>
 
+        <th:block layout:fragment="addCommonScript"></th:block>
+
         <script th:src="@{/admin/js/common.js}"></script>
 
         <th:block th:if="${addScript != null}">
             <script th:each="jsPath : ${addScript}"
                     th:src="@{/admin/js/{path}.js(path=${jsPath})}"></script>
         </th:block>
+
+        <th:block layout:fragment="addScript"></th:block>
 
     </head>
     <body>
@@ -51,7 +57,8 @@
                 <div layout:fragment="content" class="main-content"></div>
             </section>
         </main>
-        <th:block th:replace="~{common/_session_message::message}"></th:block>
-        <iframe name="ifrmProcess" class="dn"></iframe>
+
+
+
     </body>
 </html>

@@ -15,7 +15,8 @@
                      th:data-gid="${profile.email}"
                      data-location="profile"
                      data-done="true"
-                     th:data-seq="${(profile != null && profile.profileImage != null) ? profile.profileImage.seq : ''}"
+                     th:data-seq="${(profile != null && profile.profileImage != null) ?
+                     profile.profileImage.seq : ''}"
                 >
                 <th:block th:if="${profile.profileImage != null}"
                           th:utext="${@utils.showImage(profile.profileImage.seq, 250, 350, 'image')}"></th:block>
@@ -108,11 +109,9 @@
             </dd>
         </dl>
         <dl>
-            <dt th:text="#{약관동의}"></dt>
-            <dd>
-                <input type="checkbox" name="optionalTerms" value="advertisement" th:field="*{optionalTerms}" id="optionalTerms0" class="terms">
-                <label for="optionalTerms0" th:text="#{광고성_정보_전송에_대해_동의합니다.(선택)}"></label>
-            </dd>
+            <dt th:text = "#{약관동의}"></dt>
+        <input type="checkbox" name="optionalTerms" value="advertisement" th:field="*{optionalTerms}" id="optionalTerms0" class="terms">
+        <label for="optionalTerms0" th:text="#{광고성_정보_전송에_대해_동의합니다.(선택)}"></label>
         </dl>
         <button type="submit" th:text="#{수정하기}"></button>
     </form>

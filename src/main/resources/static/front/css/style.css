@@ -11,7 +11,7 @@ img { border: 0; }
 /* 기본 스타일 초기화 E */
 
 /* 공통 스타일 S */
-.layout-width { max-width: 1250px; min-width: 1100px; }
+.layout-width { max-width: 1250px; min-width: 1100px; margin: 0 auto; }
 main {
     min-height: 500px;
 }
@@ -188,6 +188,25 @@ header .move-to-store::after {
     left: -15px;
     transform: skew(-45deg);
 }
+
+header .link-mypage{
+    position: relative;
+}
+
+header .link-mypage .badge {
+    position: absolute;
+    display: block;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 15px;
+    background: #f00;
+    color: #fff;
+    top: -4px;
+    right: -7px;
+    text-align: center;
+    line-height: 20px;
+    font-size: 0.65rem;
+}
 /* 사이트 상단 헤더 E */
 
 /* 페이지네이션 S */
@@ -215,3 +234,9 @@ header .move-to-store::after {
     color: #fff;
 }
 /* 페이지네이션 E */
+
+/* 제목 공통 S */
+h1{
+    margin: 0;
+}
+/* 제목 공통 E */

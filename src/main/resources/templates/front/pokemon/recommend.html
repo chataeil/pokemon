@@ -8,77 +8,76 @@
     <h1 th:text="#{포켓몬_타입_추천}"></h1>
     <form name="frmRecommend" method="POST" th:action="@{/pokemon/recommend}" autocomplete="off" th:object="${requestRecommend}">
         <ul>
-            <!-- 모든 항목에 대해 동일한 name 속성을 사용 -->
             <li>
                 <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="water" id="selectTerms1">
                 <label for="selectTerms1" th:text="#{힘들 때 당신은 유연하게 상황을 받아들이고, 차분하게 해결책을 찾으려 하나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="fire" id="selectTerms2">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="fire" id="selectTerms2">
                 <label for="selectTerms2" th:text="#{힘들 때 당신은 열정을 불태우며 더욱 열심히 노력하나요}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="grass" id="selectTerms3">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="grass" id="selectTerms3">
                 <label for="selectTerms3" th:text="#{힘들 때 당신은 자연이나 여유로운 환경에서 휴식을 취하며 치유하려 하나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="electric" id="selectTerms4">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="electric" id="selectTerms4">
                 <label for="selectTerms4" th:text="#{힘들 때 당신은 빠르게 상황을 해결하려고 머리를 빠르게 돌리며 에너지를 얻으려 하나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="psychic" id="selectTerms5">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="psychic" id="selectTerms5">
                 <label for="selectTerms5" th:text="#{힘들 때 당신은 깊은 생각에 잠기며 문제를 깊이 분석하려 하나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="rock" id="selectTerms6">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="rock" id="selectTerms6">
                 <label for="selectTerms6" th:text="#{힘들 때 당신은 침착하고 흔들리지 않으려 노력하며, 강한 의지로 버티나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="steal" id="selectTerms7">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="steel" id="selectTerms7">
                 <label for="selectTerms7" th:text="#{힘들 때 당신은 강한 책임감을 가지고 문제를 해결하려고 하나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="dark" id="selectTerms8">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="dark" id="selectTerms8">
                 <label for="selectTerms8" th:text="#{힘들 때 당신은 상황을 비틀어 자신에게 유리하게 전환시키려 하나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="poison" id="selectTerms9">
+                <input type="radio" th:field="*{selectTerms}" name="selectTerms"value="poison" id="selectTerms9">
                 <label for="selectTerms9" th:text="#{힘들 때 당신은 타인과의 관계에서 벗어나 혼자서 상황을 해결하려 하나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="ice" id="selectTerms10">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="ice" id="selectTerms10">
                 <label for="selectTerms10" th:text="#{힘들 때 당신은 차분하게 혼자 시간을 보내며 마음을 가라앉히려 하나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="dragon" id="selectTerms11">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="dragon" id="selectTerms11">
                 <label for="selectTerms11" th:text="#{힘들 때 당신은 스스로를 다잡고, 상황을 극복하기 위한 결단을 내리나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="fairy" id="selectTerms12">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="fairy" id="selectTerms12">
                 <label for="selectTerms12" th:text="#{힘들 때 당신은 주변 사람들과 소통하며 긍정적인 에너지를 얻으려고 하나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="ghost" id="selectTerms13">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="ghost" id="selectTerms13">
                 <label for="selectTerms13" th:text="#{힘들 때 당신은 외로움을 느끼며 혼자만의 시간을 보내는 편인가요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="bug" id="selectTerms14">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="bug" id="selectTerms14">
                 <label for="selectTerms14" th:text="#{힘들 때 당신은 꾸준히 작은 노력으로 문제를 해결하려 하나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="normal" id="selectTerms15">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="normal" id="selectTerms15">
                 <label for="selectTerms15" th:text="#{힘들 때 당신은 평범한 일상으로 돌아가 안정을 찾으려 하나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="fighting" id="selectTerms16">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="fighting" id="selectTerms16">
                 <label for="selectTerms16" th:text="#{힘들 때 당신은 자신을 다잡고, 문제에 맞서 싸우며 해결하려 하나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="ground" id="selectTerms17">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="ground" id="selectTerms17">
                 <label for="selectTerms17" th:text="#{힘들 때 당신은 현실적으로 문제를 분석하고, 실질적인 방법을 찾아 해결하려 하나요?}"></label>
             </li>
             <li>
-                <input type="radio" th:field="*{selectTerms}" name="selectTerms" value="flying" id="selectTerms18">
+                <input type="radio" th:field="*{selectTerms}"name="selectTerms" value="flying" id="selectTerms18">
                 <label for="selectTerms18" th:text="#{힘들 때 당신은 자유롭게 생각하고, 기분 전환을 위해 새로운 일을 시작하려 하나요?}"></label>
             </li>
         </ul>
