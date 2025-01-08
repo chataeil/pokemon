@@ -126,15 +126,11 @@ public class MypageController {
     public String mypokemonlist(CommonSearch search, Model model) {
         commonProcess("mypokemonlist", model);
 
-
         PokemonSearch pSearch = modelMapper.map(search, PokemonSearch.class);
-        List<Pokemon> items = pokemonInfoService.getMyEntity(pSearch);
+        List<Pokemon> items = pokemonInfoService.getMyEntrys(pSearch);
 
-        if (items.size() > 6){
-            model.addAttribute("error", "포켓몬은 최대 6개까지만 선택할 수 있습니다.");
-            return utils.tpl("mypage/mypokemonlist");
-        }
         model.addAttribute("items", items);
+
         return utils.tpl("mypage/mypokemonlist");
     }
 

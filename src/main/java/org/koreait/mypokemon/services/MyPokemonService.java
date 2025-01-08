@@ -87,6 +87,6 @@ public class MyPokemonService {
         context.setVariable("isMine", myPokemons.contains(seq));
         context.setVariable("isLogin", memberUtil.isLogin());
 
-        return templateEngine.process("common/_pokemon", context);  // 템플릿 처리
+        return templateEngine.process("common/_my_pokemon_list", context);  // 템플릿 처리
     }
 }

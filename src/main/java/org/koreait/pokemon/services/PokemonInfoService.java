@@ -94,21 +94,14 @@ public class PokemonInfoService {
         return getList(search);
     }
     public List<Pokemon> getMyList(PokemonSearch search) {
+        search.setLimit(6);
+        ListData<Pokemon> data = getList(search);
 
-        QPokemon pokemon = QPokemon.pokemon;
+        return data.getItems();
 
-        List<Pokemon> items = queryFactory.selectFrom(pokemon)
-                .fetch();
-
-//        List<Pokemon> items = pokemonRepository.findAll();
-
-        // 추가 정보 처리
-        items.forEach(this::addInfo);
-
-        return items; // 단순히 조회된 목록을 반환
     }
-
-    public List<Pokemon> getMyEntity(PokemonSearch search){
+    // 내가 고른 포켓몬 목록
+    public List<Pokemon> getMyEntrys(PokemonSearch search){
         List<Long> seq = pokemonService.getMyPokemon();
         if (seq == null || seq.isEmpty()) {
             return new ArrayList<>();
@@ -117,6 +110,7 @@ public class PokemonInfoService {
 
         // 단순 조회만 하도록 getMyList를 호출
         return getMyList(search);
+
     }
     /**
      * 포켓몬 단일 조회
@@ -191,7 +185,7 @@ public class PokemonInfoService {
         QPokemon pokemon = QPokemon.pokemon;
 
         return queryFactory.select(pokemon.seq.max())
-                    .from(pokemon)
-                    .fetchFirst();
+                .from(pokemon)
+                .fetchFirst();
     }
 }

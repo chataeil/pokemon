@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/api/pokemonlist")
 public class MyPokemonController {
 
     private final HttpServletRequest request;
