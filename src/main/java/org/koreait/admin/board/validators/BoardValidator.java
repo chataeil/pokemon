@@ -9,7 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 @Lazy
-@Component
+@Component("adminBoardValidator")
 @RequiredArgsConstructor
 public class BoardValidator implements Validator {
 
@@ -27,11 +27,14 @@ public class BoardValidator implements Validator {
         }
 
         RequestBoard form = (RequestBoard)target;
-        
+
         // 게시판 등록일때만 게시판 아이디의 중복 여부 체크
+        //  비회원 비밀번호 검증
         String bid = form.getBid();
         if (form.getMode().equals("add") && boardRepository.exists(bid)) {
             errors.rejectValue("bid", "Duplicated");
         }
+        // 수정일 때 seq 필수 여부
+
     }
 }
