@@ -1,4 +1,3 @@
-
 package org.koreait.board.controllers;
 
 import jakarta.validation.Valid;
@@ -6,13 +5,16 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.koreait.board.entities.Board;
 import org.koreait.board.entities.BoardData;
+import org.koreait.board.services.BoardInfoService;
 import org.koreait.board.services.BoardUpdateService;
+import org.koreait.board.services.BoardViewUpdateService;
 import org.koreait.board.services.configs.BoardConfigInfoService;
 import org.koreait.board.validators.BoardValidator;
 import org.koreait.file.constants.FileStatus;
 import org.koreait.file.services.FileInfoService;
 import org.koreait.global.annotations.ApplyErrorPage;
 import org.koreait.global.libs.Utils;
+import org.koreait.global.paging.ListData;
 import org.koreait.member.libs.MemberUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,6 +40,8 @@ public class BoardController {
     private final FileInfoService fileInfoService;
     private final BoardValidator boardValidator;
     private final BoardUpdateService boardUpdateService;
+    private final BoardInfoService boardInfoService;
+    private final BoardViewUpdateService boardViewUpdateService;
 
     /**
      * 사용자별 공통 데이터
@@ -57,9 +61,12 @@ public class BoardController {
      * @return
      */
     @GetMapping("/list/{bid}")
-    public String list(@PathVariable("bid") String bid, Model model) {
+    public String list(@PathVariable("bid") String bid, BoardSearch search, Model model) {
         commonProcess(bid, "list", model);
 
+        ListData<BoardData> data = boardInfoService.getList(bid, search);
+        model.addAttribute("items", data.getItems());
+        model.addAttribute("pagination", data.getPagination());
 
         return utils.tpl("board/list");
     }
@@ -74,6 +81,10 @@ public class BoardController {
     @GetMapping("/view/{seq}")
     public String view(@PathVariable("seq") Long seq, Model model) {
         commonProcess(seq, "view", model);
+
+        long viewCount = boardViewUpdateService.process(seq); // 조회수 업데이트
+        BoardData data = (BoardData)model.getAttribute("boardData");
+        data.setViewCount(viewCount);
 
         return utils.tpl("board/view");
     }
@@ -107,8 +118,11 @@ public class BoardController {
      * @return
      */
     @GetMapping("/edit/{seq}")
-    public String edit(@PathVariable("seq") Long seq, Model model) {
+    public String edit(@PathVariable("seq") Long seq, Model model, @SessionAttribute("commonValue") CommonValue commonValue) {
         commonProcess(seq, "edit", model);
+
+        RequestBoard form = boardInfoService.getForm(commonValue.getData());
+        model.addAttribute("requestBoard", form);
 
         return utils.tpl("board/edit");
     }
@@ -122,7 +136,8 @@ public class BoardController {
     public String save(@Valid RequestBoard form, Errors errors, @SessionAttribute("commonValue") CommonValue commonValue, Model model) {
         String mode = form.getMode();
         mode = StringUtils.hasText(mode) ? mode : "write";
-        commonProcess(form.getBid(), mode, model);
+        if (mode.equals("edit")) commonProcess(form.getSeq(), mode, model);
+        else commonProcess(form.getBid(), mode, model);
 
         boardValidator.validate(form, errors);
 
@@ -134,7 +149,7 @@ public class BoardController {
             return utils.tpl("board/" + mode);
         }
 
-        BoardData data =boardUpdateService.process(form);
+        BoardData data = boardUpdateService.process(form);
 
         Board board = commonValue.getBoard();
         // 글작성, 수정 성공시 글보기 또는 글목록으로 이동
@@ -188,25 +203,44 @@ public class BoardController {
             addScript.add(String.format("board/%s/form", board.getSkin()));
         }
 
-        CommonValue commonValue = commonValue();
-        commonValue.setBoard(board);
+        // 게시글 번호가 있는 mode가 view이거나 edit인 경우는 배제
+        if (!List.of("view", "edit").contains(mode)) {
+            CommonValue commonValue = commonValue();
+            commonValue.setBoard(board);
+            model.addAttribute("commonValue", commonValue);
+            model.addAttribute("pageTitle", pageTitle);
+        }
 
         model.addAttribute("board", board);
-        model.addAttribute("commonValue", commonValue);
+        model.addAttribute("categories", board.getCategories());
         model.addAttribute("addCommonScript", addCommonScript);
         model.addAttribute("addScript", addScript);
         model.addAttribute("addCss", addCss);
-        model.addAttribute("pageTitle", pageTitle);
+        model.addAttribute("mode", mode);
     }
 
+    // 게시글 보기, 게시글 수정
     private void commonProcess(Long seq, String mode, Model model) {
-        String bid = null;
+        BoardData item = boardInfoService.get(seq);
+        Board board = item.getBoard();
 
+        String pageTitle = String.format("%s - %s", item.getSubject(), board.getName());
+
+        String bid = board.getBid();
         commonProcess(bid, mode, model);
+
+        CommonValue commonValue = commonValue();
+        commonValue.setBoard(board);
+        commonValue.setData(item);
+
+        model.addAttribute("commonValue", commonValue);
+        model.addAttribute("pageTitle", pageTitle);
+        model.addAttribute("boardData", item);
     }
 
     @Data
     static class CommonValue implements Serializable {
         private Board board;
+        private BoardData data;
     }
 }

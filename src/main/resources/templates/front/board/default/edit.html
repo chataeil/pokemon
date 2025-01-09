@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="skin" th:object="${board}">
-        <div th:replace="~{front/board/default/edit::skin}"></div>
+    <div th:replace="~{front/board/default/_title::title}"></div>
 
-    <form name="frmSave" method="POST" th:action="@{/board/save}" autocomplete="off">
-        <input type="hidden" name="mode" value="write">
+    <form name="frmSave" method="POST" th:action="@{/board/save}" autocomplete="off" th:object="${requestBoard}">
+        <input type="hidden" name="mode" value="edit">
         <input type="hidden" name="seq" th:field="*{seq}">
 
         <th:block th:replace="~{front/board/default/_form::common}"></th:block>
@@ -14,5 +14,5 @@
             <button type="submit" class="btn black" th:text="#{수정하기}"></button>
         </div>
     </form>
-    </th:block>
+</th:block>
 </html>
