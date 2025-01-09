@@ -113,26 +113,30 @@ public class MypageController {
         mode = Objects.requireNonNullElse(mode, WishType.POKEMON);
         if (mode == WishType.BOARD) { // 게시글 찜하기 목록
 
+        } else if (mode == WishType.MYPOKEMON) { // 나의 포켓몬 6마리
+            PokemonSearch pSearch = modelMapper.map(search, PokemonSearch.class); // 검색 조건 변환
+            List<Pokemon> data = pokemonInfoService.getMyList(pSearch); // getMyList가 목록 데이터 반환
+            model.addAttribute("items", data); // 뷰 속성에 값을 담음.
         } else { // 포켓몬 찜하기 목록
             PokemonSearch pSearch = modelMapper.map(search, PokemonSearch.class);
             ListData<Pokemon> data = pokemonInfoService.getMyPokemons(pSearch);
-            model.addAttribute("items", data.getItems());
+            model.addAttribute("items", data.getItems()); // 목록 데이터
             model.addAttribute("pagination", data.getPagination());
         }
 
         return utils.tpl("mypage/wishlist");
     }
-    @GetMapping({"/mypokemonlist"})
-    public String mypokemonlist(CommonSearch search, Model model) {
-        commonProcess("mypokemonlist", model);
-
-        PokemonSearch pSearch = modelMapper.map(search, PokemonSearch.class);
-        List<Pokemon> items = pokemonInfoService.getMyEntrys(pSearch);
-
-        model.addAttribute("items", items);
-
-        return utils.tpl("mypage/mypokemonlist");
-    }
+//    @GetMapping({"/mypokemonlist"})
+//    public String mypokemonlist(CommonSearch search, Model model) {
+//        commonProcess("mypokemonlist", model);
+//
+//        PokemonSearch pSearch = modelMapper.map(search, PokemonSearch.class);
+//        List<Pokemon> items = pokemonInfoService.getMyEntrys(pSearch);
+//
+//        model.addAttribute("items", items);
+//
+//        return utils.tpl("mypage/mypokemonlist");
+//    }
 
     /**
      * 컨트롤러 공통 처리 영역
@@ -148,20 +152,17 @@ public class MypageController {
         List<String> addScript = new ArrayList<>();
 
         if (mode.equals("profile")) { // 회원정보 수정
-            addCommonScript.add("fileManager");
-            addCommonScript.add("address");
-            addScript.add("mypage/profile");
+            addCommonScript.add("fileManager"); // 공통적으로 필요한 스크립트
+            addCommonScript.add("address"); // 공통으로 필요한 스크립트
+            addScript.add("mypage/profile"); // 페이지 별로 필요한 스크립트.
             pageTitle = utils.getMessage("회원정보_수정");
         } else if (mode.equals("wishlist")) { // 찜하기 목록
             addCommonScript.add("wish");
             pageTitle = utils.getMessage("나의_WISH");
-        } else if (mode.equals("mypokemonlist")) { // 나의 포켓몬 목록
-            addCommonScript.add("mypokemon");
-            pageTitle = utils.getMessage("나의_ENTRY");
         }
 
-        model.addAttribute("addCommonScript", addCommonScript);
-        model.addAttribute("addScript", addScript);
+        model.addAttribute("addCommonScript", addCommonScript); // 공통적으로 필요한 스크립트
+        model.addAttribute("addScript", addScript); // 페이지별로 필요한 스크립트
         model.addAttribute("pageTitle", pageTitle);
     }
 }

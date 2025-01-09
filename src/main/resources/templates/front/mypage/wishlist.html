@@ -7,6 +7,7 @@
     <nav>
         <a th:href="@{/mypage/wishlist/POKEMON}" class="tab" th:classappend="${mode == null || mode.name == 'POKEMON'} ? 'on'" th:text="#{포켓몬}"></a>
         <a th:href="@{/mypage/wishlist/BOARD}" class="tab" th:classappend="${mode != null && mode.name == 'BOARD'} ? 'on'" th:text="#{게시글}"></a>
+        <a th:href="@{/mypage/wishlist/MYPOKEMON}" class="tab" th:classappend="${mode != null && mode.name == 'MYPOKEMON'} ? 'on'" th:text="#{엔트리}"></a>
     </nav>
 
     <th:block th:if="${mode != null && mode.name == 'BOARD'}">
@@ -15,6 +16,7 @@
     <th:block th:unless="${mode != null && mode.name == 'BOARD'}">
         <th:block th:replace="~{front/mypage/_wish_pokemon::pokemon}"></th:block>
     </th:block>
+
     <th:block th:replace="~{common/_pagination::pagination}"></th:block>
 </section>
 </html>

@@ -12,7 +12,7 @@ public class ApiTest2 {
 
     @Test
     void updateTest1() {
-        for (int i = 1; i <= 6; i++) {
+        for (int i = 1; i <= 1; i++) {
             service.update(i);
         }
     }

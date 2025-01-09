@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.paging.ListData;
 import org.koreait.global.paging.Pagination;
-import org.koreait.mypokemon.services.MyPokemonService;
+//import org.koreait.mypokemon.services.MyPokemonService;
 import org.koreait.pokemon.controllers.PokemonSearch;
 import org.koreait.pokemon.entities.Pokemon;
 import org.koreait.pokemon.entities.QPokemon;
@@ -37,7 +37,7 @@ public class PokemonInfoService {
     private final Utils utils;
     private final JPAQueryFactory queryFactory;
     private final WishService wishService;
-    private final MyPokemonService pokemonService;
+//    private final MyPokemonService pokemonService;
 
     /**
      * 포켓몬 목록 조회
@@ -84,34 +84,38 @@ public class PokemonInfoService {
 
     // 내가 찜한 포켓몬 목록
     public ListData<Pokemon> getMyPokemons(PokemonSearch search) {
-        List<Long> seq = wishService.getMyWish(WishType.POKEMON);
-        if (seq == null || seq.isEmpty()) {
+        List<Long> seq = wishService.getMyWish(WishType.POKEMON); // 찜한 포켓몬 ID 받아와서
+        if (seq == null || seq.isEmpty()) { // 없으면 빈 리스트 반환
             return new ListData<>();
         }
 
-        search.setSeq(seq);
+        search.setSeq(seq); // 있으면 seq를 셋함
 
-        return getList(search);
+        return getList(search); // 조회된 포켓몬 반환
     }
     public List<Pokemon> getMyList(PokemonSearch search) {
-        search.setLimit(6);
-        ListData<Pokemon> data = getList(search);
+        List<Long> seq =wishService.getMyWish(WishType.MYPOKEMON); // 찜한 포켓몬 ID를 조회 (쿼리 DSL 사용)
+        if (seq == null || seq.isEmpty()) { // 찜한 포켓몬이 없으면 빈 리스트 반환
+            return new ArrayList<>();
+        }
+        search.setLimit(6);// 검색 조건에 최대 6개의 결과만 제한
+        ListData<Pokemon> data = getList(search);// 검색 조건에 맞는 포켓몬 목록을 조회
 
-        return data.getItems();
+        return data.getItems();// 조회된 포켓몬 목록을 반환
 
     }
     // 내가 고른 포켓몬 목록
-    public List<Pokemon> getMyEntrys(PokemonSearch search){
-        List<Long> seq = pokemonService.getMyPokemon();
-        if (seq == null || seq.isEmpty()) {
-            return new ArrayList<>();
-        }
-        search.setSeq(seq);
-
-        // 단순 조회만 하도록 getMyList를 호출
-        return getMyList(search);
-
-    }
+//    public List<Pokemon> getMyEntrys(PokemonSearch search){
+//        List<Long> seq = pokemonService.getMyPokemon();
+//        if (seq == null || seq.isEmpty()) {
+//            return new ArrayList<>();
+//        }
+//        search.setSeq(seq);
+//
+//        // 단순 조회만 하도록 getMyList를 호출
+//        return getMyList(search);
+//
+//    }
     /**
      * 포켓몬 단일 조회
      *
