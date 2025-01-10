@@ -3,6 +3,8 @@ package org.koreait.wishlist.services;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.koreait.global.exceptions.BadRequestException;
+import org.koreait.global.libs.Utils;
 import org.koreait.member.entities.Member;
 import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.repositories.MemberRepository;
@@ -30,8 +32,9 @@ public class WishService {
     private final JPAQueryFactory queryFactory;
     private final MemberRepository memberRepository;
     private final SpringTemplateEngine templateEngine;
+    private final Utils utils;
 
-    public void process(String mode, Long seq, WishType type) {
+    public void process(String mode, Long seq, WishType type) { // 찜등록하는 역할
         if (!memberUtil.isLogin()) {
             return;
         }
@@ -44,7 +47,18 @@ public class WishService {
                 WishId wishId = new WishId(seq, type, member); //생성해서 삭제할 대상을 정확히 명시
                 repository.deleteById(wishId);// 삭제
 
-            } else { // 찜 추가
+            } else { // 찜 추가 여기서 통제
+                // 게임용 포켓몬 선택 제한 (6개)
+                if (type == WishType.GAME_POKEMON){// 새로 추가
+                    QWish wish = QWish.wish; //Query dsl
+                    BooleanBuilder builder = new BooleanBuilder(); // 쿼리 조건 실행하는 불리언 객체 생성
+                    builder.and(wish.member.eq(member))  // 식별한 로그인 멤버 확인
+                            .and(wish.type.eq(WishType.GAME_POKEMON));// 멤버가 선택한 타입 확인
+                    long total = repository.count(builder); // 만들어진 빌더를 레포지토리에 카운트
+                    if (total >= 6L){ // 카운트 해서 6개 이상은 선택 불가
+                        throw new BadRequestException(utils.getMessage("MaxChoice.gamePokemon"));
+                    }
+                }
                 Wish wish = new Wish();
                 wish.setSeq(seq);
                 wish.setType(type);
@@ -54,6 +68,10 @@ public class WishService {
 
             repository.flush();
         } catch (Exception e) {
+            if (e instanceof BadRequestException){
+                throw e;
+            }
+
             e.printStackTrace();
         }
     }

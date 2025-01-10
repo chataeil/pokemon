@@ -12,6 +12,7 @@ import org.koreait.member.entities.Member;
 import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.MemberInfoService;
 import org.koreait.member.services.MemberUpdateService;
+import org.koreait.member.social.services.KakaoLoginService;
 import org.koreait.mypage.validators.ProfileValidator;
 import org.koreait.pokemon.controllers.PokemonSearch;
 import org.koreait.pokemon.entities.Pokemon;
@@ -43,6 +44,7 @@ public class MypageController {
     private final ProfileValidator profileValidator;
     private final MemberInfoService infoService;
     private final PokemonInfoService pokemonInfoService;
+    private final KakaoLoginService kakaoLoginService;
 
     @ModelAttribute("profile")
     public Member getMember() {
@@ -66,6 +68,10 @@ public class MypageController {
         if (StringUtils.hasText(optionalTerms)) {
             form.setOptionalTerms(Arrays.stream(optionalTerms.split("\\|\\|")).toList());
         }
+
+
+        form.setKakaoLoginConnectUrl(kakaoLoginService.getLoginUrl("connect"));
+        form.setKakaoLoginDisconnectUrl(kakaoLoginService.getLoginUrl("disconnect"));
 
         model.addAttribute("requestProfile", form);
 
@@ -113,10 +119,11 @@ public class MypageController {
         mode = Objects.requireNonNullElse(mode, WishType.POKEMON);
         if (mode == WishType.BOARD) { // 게시글 찜하기 목록
 
-        } else if (mode == WishType.MYPOKEMON) { // 나의 포켓몬 6마리
-            PokemonSearch pSearch = modelMapper.map(search, PokemonSearch.class); // 검색 조건 변환
-            List<Pokemon> data = pokemonInfoService.getMyList(pSearch); // getMyList가 목록 데이터 반환
-            model.addAttribute("items", data); // 뷰 속성에 값을 담음.
+        } else if (mode == WishType.GAME_POKEMON) { // 나의 포켓몬 6마리
+
+            List<Pokemon> items = pokemonInfoService.getMyPokemons(); // getMyList가 목록 데이터 반환
+            model.addAttribute("items", items);
+
         } else { // 포켓몬 찜하기 목록
             PokemonSearch pSearch = modelMapper.map(search, PokemonSearch.class);
             ListData<Pokemon> data = pokemonInfoService.getMyPokemons(pSearch);

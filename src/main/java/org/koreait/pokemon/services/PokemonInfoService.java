@@ -93,12 +93,13 @@ public class PokemonInfoService {
 
         return getList(search); // 조회된 포켓몬 반환
     }
-    public List<Pokemon> getMyList(PokemonSearch search) {
-        List<Long> seq =wishService.getMyWish(WishType.MYPOKEMON); // 찜한 포켓몬 ID를 조회 (쿼리 DSL 사용)
+    public List<Pokemon> getMyPokemons() {
+        List<Long> seq =wishService.getMyWish(WishType.GAME_POKEMON); // 찜한 포켓몬 ID를 조회 (쿼리 DSL 사용)
         if (seq == null || seq.isEmpty()) { // 찜한 포켓몬이 없으면 빈 리스트 반환
-            return new ArrayList<>();
+            return List.of();
         }
-        search.setLimit(6);// 검색 조건에 최대 6개의 결과만 제한
+        PokemonSearch search = new PokemonSearch();
+        search.setSeq(seq);// 검색 조건에 최대 6개의 결과만 제한
         ListData<Pokemon> data = getList(search);// 검색 조건에 맞는 포켓몬 목록을 조회
 
         return data.getItems();// 조회된 포켓몬 목록을 반환

@@ -25,9 +25,9 @@ public class MemberUtil {
      * @return
      */
     public boolean isAdmin() {
-         return isLogin() &&
-                    getMember().getAuthorities().stream()
-                            .anyMatch(a -> a.getAuthority() == Authority.ADMIN || a.getAuthority() == Authority.MANAGER);
+        return isLogin() &&
+                getMember().getAuthorities().stream()
+                        .anyMatch(a -> a.getAuthority() == Authority.ADMIN || a.getAuthority() == Authority.MANAGER);
     }
 
     /**
@@ -37,6 +37,9 @@ public class MemberUtil {
      */
     public Member getMember() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("auth:" + auth);
+        System.out.println("isAuthenticated:" + auth.isAuthenticated());
+
         if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof MemberInfo memberInfo) {
             Member member = (Member)session.getAttribute("member");
             if (member == null) {

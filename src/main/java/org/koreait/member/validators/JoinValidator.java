@@ -9,6 +9,7 @@ import org.koreait.member.repositories.MemberRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import java.time.LocalDate;
@@ -82,12 +83,15 @@ public class JoinValidator implements Validator, PasswordValidator {
         String password = form.getPassword();
         String confirmPassword = form.getConfirmPassword();
         LocalDate birthDt = form.getBirthDt();
+        boolean isSocial = form.isSocial(); // 소셜 로그인 여부
 
         // 1. 이메일 중복 여부 체크
         if (memberRepository.exists(email)) {
             errors.rejectValue("email", "Duplicated");
         }
-
+        if (!isSocial)
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotBlank");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "NotBlank");
         // 2. 비밀번호 복잡성 S
         if (!alphaCheck(password, false) || !numberCheck(password) || !specialCharsCheck(password)) {
             errors.rejectValue("password", "Complexity");

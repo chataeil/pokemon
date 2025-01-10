@@ -2,6 +2,6 @@ package org.koreait.wishlist.constants;
 
 public enum WishType {
     POKEMON,
-    MYPOKEMON,
+    GAME_POKEMON,
     BOARD
 }

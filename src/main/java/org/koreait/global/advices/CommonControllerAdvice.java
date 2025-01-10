@@ -75,6 +75,9 @@ public class CommonControllerAdvice {
         mv.setStatus(status);
         mv.addAllObjects(data);
         mv.setViewName(tpl);
+
+        e.printStackTrace();
+
         return mv;
     }
 }
