@@ -126,7 +126,7 @@ public class MypageController {
 
         } else { // 포켓몬 찜하기 목록
             PokemonSearch pSearch = modelMapper.map(search, PokemonSearch.class);
-            ListData<Pokemon> data = pokemonInfoService.getMyPokemons(pSearch);
+            ListData<Pokemon> data = pokemonInfoService.getMyPokemons(pSearch); // Board가 들어올지 Pokemon이 들어올지 모르기 때문에 둘다 들어올 수 있도록 해놓음. 들어온 값에 따라 다르게 처리. 그래서 commonsearch씀 (다형성)
             model.addAttribute("items", data.getItems()); // 목록 데이터
             model.addAttribute("pagination", data.getPagination());
         }

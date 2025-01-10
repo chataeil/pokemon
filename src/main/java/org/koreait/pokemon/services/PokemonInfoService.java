@@ -99,7 +99,7 @@ public class PokemonInfoService {
             return List.of();
         }
         PokemonSearch search = new PokemonSearch();
-        search.setSeq(seq);// 검색 조건에 최대 6개의 결과만 제한
+        search.setSeq(seq);
         ListData<Pokemon> data = getList(search);// 검색 조건에 맞는 포켓몬 목록을 조회
 
         return data.getItems();// 조회된 포켓몬 목록을 반환

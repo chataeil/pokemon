@@ -118,13 +118,15 @@ public class KakaoLoginService implements SocialLoginService {
     @Override
     public String getLoginUrl(String redirectUrl) {
         SocialConfig socialConfig = codeValueService.get("socialConfig", SocialConfig.class);
-        String restApiKey = socialConfig.getKakaoRestApiKey();
-        if (!socialConfig.isUseKakaoLogin() || !StringUtils.hasText(restApiKey)) {
+
+        if (socialConfig == null || !socialConfig.isUseKakaoLogin() || !StringUtils.hasText(socialConfig.getKakaoRestApiKey())) {
             return null;
         }
+
+        String restApiKey = socialConfig.getKakaoRestApiKey();
         String redirectUri = utils.getUrl("/member/social/callback/kakao");
         redirectUrl = Objects.requireNonNullElse(redirectUrl, "");
-        return String.format("1. 토큰을 발급 받기 위한 인가 코드를 발급 \n" +"https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=%s&redirect_uri=%s%response_type=code&state=%s", restApiKey, redirectUri, redirectUrl);
+        return String.format("https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=%s&redirect_uri=%s%response_type=code&state=%s", restApiKey, redirectUri, redirectUrl);
     }
     
     // 소셜 로그인 연결
