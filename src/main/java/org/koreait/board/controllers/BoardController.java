@@ -1,20 +1,22 @@
 package org.koreait.board.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.koreait.board.entities.Board;
 import org.koreait.board.entities.BoardData;
-import org.koreait.board.services.BoardInfoService;
-import org.koreait.board.services.BoardUpdateService;
-import org.koreait.board.services.BoardViewUpdateService;
+import org.koreait.board.exceptions.GuestPasswordCheckException;
+import org.koreait.board.services.*;
 import org.koreait.board.services.configs.BoardConfigInfoService;
 import org.koreait.board.validators.BoardValidator;
 import org.koreait.file.constants.FileStatus;
 import org.koreait.file.services.FileInfoService;
-import org.koreait.global.annotations.ApplyErrorPage;
+import org.koreait.global.entities.SiteConfig;
+import org.koreait.global.exceptions.scripts.AlertException;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.paging.ListData;
+import org.koreait.global.services.CodeValueService;
 import org.koreait.member.libs.MemberUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,10 +27,11 @@ import org.springframework.web.bind.annotation.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Controller
-@ApplyErrorPage
+//@ApplyErrorPage
 @RequestMapping("/board")
 @RequiredArgsConstructor
 @SessionAttributes({"commonValue"})
@@ -42,6 +45,9 @@ public class BoardController {
     private final BoardUpdateService boardUpdateService;
     private final BoardInfoService boardInfoService;
     private final BoardViewUpdateService boardViewUpdateService;
+    private final BoardDeleteService boardDeleteService;
+    private final BoardAuthService boardAuthService;
+    private final CodeValueService codeValueService;
 
     /**
      * 사용자별 공통 데이터
@@ -168,12 +174,19 @@ public class BoardController {
         commonProcess(seq, "delete", model);
         Board board = commonValue.getBoard();
 
+        boardDeleteService.delete(seq);
+
         return "redirect:/board/list/" + board.getBid();
     }
 
 
     // 공통 처리
     private void commonProcess(String bid, String mode, Model model) {
+
+        // 권한 체크
+        if (!List.of("edit", "delete").contains(mode)){
+            boardAuthService.check(mode, bid);
+    }
         Board board = configInfoService.get(bid);
         String pageTitle = board.getName(); // 게시판명 - 목록, 글쓰기
         List<String> addCommonScript = new ArrayList<>();
@@ -219,10 +232,54 @@ public class BoardController {
         model.addAttribute("mode", mode);
     }
 
+    /**
+     * 비회원 비밀번호 처리
+     * @return
+     */
+    @ExceptionHandler(GuestPasswordCheckException.class)
+    public String guestPassword(Model model) {
+        SiteConfig config = Objects.requireNonNullElseGet(codeValueService.get("siteConfig", SiteConfig.class), SiteConfig::new);
+        model.addAttribute("siteConfig", config);
+
+        return utils.tpl("board/password");
+    }
+
+    /**
+     * 비회원 비밀번호 검증
+     *
+     * @param password
+     * @param session
+     * @param model
+     * @return
+     */
+
+    @PostMapping("/password")
+    public String validateGuestPassword(@RequestParam(name="password", required = false) String password, HttpSession session, Model model){
+        if (!StringUtils.hasText(password)){
+            throw new AlertException(utils.getMessage("NotBlank.password"));
+        }
+
+        Long seq = (Long) session.getAttribute("seq");
+
+        if (!boardValidator.checkGuestPassword(password, seq)){
+            throw new AlertException(utils.getMessage("Mismatch.password"));
+        }
+        // 비회원 비밀번호 검증 성공시 세션에 board_게시글 번호
+        session.setAttribute("board_" + seq, true);
+
+        //비회원 비밀번호 인증 관료된 경우 새로 고침
+        model.addAttribute("script", "parent.location.reload();");
+        return "common/_execute_script";
+    }
+
     // 게시글 보기, 게시글 수정
     private void commonProcess(Long seq, String mode, Model model) {
+
         BoardData item = boardInfoService.get(seq);
         Board board = item.getBoard();
+
+        // 게시판 권한 체크
+        boardAuthService.check(mode, board.getBid(), seq);
 
         String pageTitle = String.format("%s - %s", item.getSubject(), board.getName());
 

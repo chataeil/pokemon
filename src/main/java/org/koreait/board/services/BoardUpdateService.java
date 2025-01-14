@@ -77,6 +77,8 @@ public class BoardUpdateService {
         boardDataRepository.saveAndFlush(data);
         fileDoneService.process(form.getGid());
 
+        // 비회원 게시글 인증 정보 삭제
+        request.getSession().removeAttribute("board_" + seq);
         return data;
     }
 }
