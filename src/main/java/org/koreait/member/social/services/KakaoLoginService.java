@@ -1,16 +1,17 @@
-
 package org.koreait.member.social.services;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.querydsl.core.BooleanBuilder;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.services.CodeValueService;
 import org.koreait.member.MemberInfo;
 import org.koreait.member.entities.Member;
+import org.koreait.member.entities.QMember;
 import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.repositories.MemberRepository;
 import org.koreait.member.services.MemberInfoService;
@@ -111,35 +112,38 @@ public class KakaoLoginService implements SocialLoginService {
 
         session.setAttribute("member", memberInfo.getMember());
         session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-
         return true;
     }
 
     @Override
     public String getLoginUrl(String redirectUrl) {
         SocialConfig socialConfig = codeValueService.get("socialConfig", SocialConfig.class);
-
-        if (socialConfig == null || !socialConfig.isUseKakaoLogin() || !StringUtils.hasText(socialConfig.getKakaoRestApiKey())) {
+        String restApiKey = socialConfig.getKakaoRestApiKey();
+        if (!socialConfig.isUseKakaoLogin() || !StringUtils.hasText(restApiKey)) {
             return null;
         }
 
-        String restApiKey = socialConfig.getKakaoRestApiKey();
         String redirectUri = utils.getUrl("/member/social/callback/kakao");
         redirectUrl = Objects.requireNonNullElse(redirectUrl, "");
-        return String.format("https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=%s&redirect_uri=%s%response_type=code&state=%s", restApiKey, redirectUri, redirectUrl);
+
+        return String.format("https://kauth.kakao.com/oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code&state=%s", restApiKey, redirectUri, redirectUrl);
     }
-    
+
     // 소셜 로그인 연결
     @Override
     public void connect(String token) {
-        if (memberUtil.isLogin()) return;
+        if (!memberUtil.isLogin()) return;
 
         Member member = memberUtil.getMember();
         member.setSocialChannel(SocialChannel.KAKAO);
         member.setSocialToken(token);
 
         memberRepository.saveAndFlush(member);
+
+        memberInfoService.addInfo(member);
+        session.setAttribute("member", member);
     }
+
     // 소셜 로그인 해제
     @Override
     public void disconnect() {
@@ -150,5 +154,17 @@ public class KakaoLoginService implements SocialLoginService {
         member.setSocialToken(null);
 
         memberRepository.saveAndFlush(member);
+
+        memberInfoService.addInfo(member);
+        session.setAttribute("member", member);
+    }
+
+    public boolean exists(String token) {
+        BooleanBuilder builder = new BooleanBuilder();
+        QMember member = QMember.member;
+        builder.and(member.socialChannel.eq(SocialChannel.KAKAO))
+                .and(member.socialToken.eq(token));
+
+        return memberRepository.exists(builder);
     }
 }

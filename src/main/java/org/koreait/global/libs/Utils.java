@@ -203,26 +203,26 @@ public class Utils {
     public String popup(String url, int width, int height) {
         return String.format("commonLib.popup('%s', %d, %d);", url, width, height);
     }
-    // 회원. 비회원 구분 해시
-    public int getMemberHash() {
-       // 회원 - 회원번호, 비회원 - IP + User-Agent
-       if (memberUtil.isLogin()) return Objects.hash(memberUtil.getMember().getSeq());
-       else { // 비회원
-           String ip = request.getRemoteAddr();
-           String ua = request.getHeader("User-Agent");
 
-           return Objects.hash(ip, ua);
-       }
+    // 회원, 비회원 구분 해시
+    public int getMemberHash() {
+        // 회원 - 회원번호, 비회원 - IP + User-Agent
+        if (memberUtil.isLogin()) return Objects.hash(memberUtil.getMember().getSeq());
+        else { // 비회원
+            String ip = request.getRemoteAddr();
+            String ua = request.getHeader("User-Agent");
+
+            return Objects.hash(ip, ua);
+        }
     }
 
     /**
-     *  전체 주소
+     * 전체 주소
      *
      * @param url
      * @return
      */
-    public String getUrl(String url){
-        return String.format("%s://%s:%d%s%s", request.getScheme(), request.getServerName()
-        , request.getServerPort(), request.getContextPath(), url);
+    public String getUrl(String url) {
+        return String.format("%s://%s:%d%s%s", request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath(), url);
     }
 }

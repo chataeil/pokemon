@@ -25,6 +25,7 @@ public class CommonControllerAdvice {
     private final Utils utils;
     private final CodeValueService codeValueService;
 
+
     @ExceptionHandler(Exception.class)
     public ModelAndView errorHandler(Exception e, HttpServletRequest request) {
         Map<String, Object> data = new HashMap<>();

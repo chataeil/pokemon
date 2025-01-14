@@ -22,12 +22,11 @@ public class BoardDeleteService {
         BoardData item = infoService.get(seq);
         String gid = item.getGid();
 
-        // 파일 삭제 S
+        // 파일 삭제
         fileDeleteService.deletes(gid);
 
         boardRepository.delete(item);
         boardRepository.flush();
-        // 파일 삭제 E
 
         // 비회원 인증 정보 삭제
         session.removeAttribute("board_" + seq);

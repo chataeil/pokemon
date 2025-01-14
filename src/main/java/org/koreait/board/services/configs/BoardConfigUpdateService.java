@@ -56,12 +56,11 @@ public class BoardConfigUpdateService {
     /**
      * 게시판 설정 목록 수정, 삭제 처리
      *
-     *
      * @param chks
      */
-    public void process(List<Integer> chks, String mode){
+    public void process(List<Integer> chks, String mode) {
         mode = StringUtils.hasText(mode) ? mode : "edit";
-        if (chks == null || chks.isEmpty()){
+        if (chks == null || chks.isEmpty()) {
             throw new AlertException("처리할 게시판을 선택하세요.");
         }
 
@@ -69,22 +68,23 @@ public class BoardConfigUpdateService {
         for (int chk : chks) {
             String bid = utils.getParam("bid_" + chk);
 
-            if (mode.equals("delete")){
+            if (mode.equals("delete")) {
                 boardRepository.deleteById(bid);
                 continue;
             }
+
             Board item = boardRepository.findById(bid).orElse(null);
             if (item == null) continue;
+
             item.setName(utils.getParam("name_" + chk));
             item.setOpen(Boolean.parseBoolean(utils.getParam("open_" + chk)));
             item.setSkin(utils.getParam("skin_" + chk));
             items.add(item);
         }
 
-        if (items.isEmpty()) { // 수정 처리
+        if (!items.isEmpty()) { // 수정 처리
             boardRepository.saveAll(items);
         }
-
 
         boardRepository.flush();
     }

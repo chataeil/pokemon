@@ -89,20 +89,24 @@ public class JoinValidator implements Validator, PasswordValidator {
         if (memberRepository.exists(email)) {
             errors.rejectValue("email", "Duplicated");
         }
-        if (!isSocial)
-            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotBlank");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "NotBlank");
-        // 2. 비밀번호 복잡성 S
-        if (!alphaCheck(password, false) || !numberCheck(password) || !specialCharsCheck(password)) {
-            errors.rejectValue("password", "Complexity");
-        }
-        // 2. 비밀번호 복잡성 E
 
-        // 3. 비밀번호, 비밀번호 확인 일치 여부 S
-        if (!password.equals(confirmPassword)) {
-            errors.rejectValue("confirmPassword", "Mismatch");
+        if (!isSocial) {
+            // 필수 여부 체크
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotBlank");
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "NotBlank");
+
+            // 2. 비밀번호 복잡성 S
+            if (!alphaCheck(password, false) || !numberCheck(password) || !specialCharsCheck(password)) {
+                errors.rejectValue("password", "Complexity");
+            }
+            // 2. 비밀번호 복잡성 E
+
+            // 3. 비밀번호, 비밀번호 확인 일치 여부 S
+            if (!password.equals(confirmPassword)) {
+                errors.rejectValue("confirmPassword", "Mismatch");
+            }
+            // 3. 비밀번호, 비밀번호 확인 일치 여부 E
         }
-        // 3. 비밀번호, 비밀번호 확인 일치 여부 E
 
         // 4. 생년월일을 입력받으면 만 14세 이상만 가입 가능하게 통제 S
         Period period = Period.between(birthDt, LocalDate.now());

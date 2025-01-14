@@ -115,15 +115,15 @@
             </dd>
         </dl>
         <th:block th:if="${profile.kakaoConnected}">
-            <a th:if="*{kakaoLoginDisConnectUrl != null && kakaoLoginDisConnectUrl != ''}" th:href="*{kakaoLoginDisConnectUrl}">
-                <button type="button" th:text="#{카카오_로그인_연결}"></button>
+            <a th:if="*{kakaoLoginDisconnectUrl != null && kakaoLoginDisconnectUrl != ''}" th:href="*{kakaoLoginDisconnectUrl}">
+                <button type="button" th:text="#{카카오_로그인_해제}"></button>
             </a>
-            <button type="button" th:text="#{카카오_로그인_해제}"></button>
         </th:block>
         <th:block th:unless="${profile.kakaoConnected}">
-            <button type="button" th:text="#{카카오_로그인_연결}"></button>
+            <a th:if="*{kakaoLoginConnectUrl != null && kakaoLoginConnectUrl != ''}" th:href="*{kakaoLoginConnectUrl}">
+                <button type="button" th:text="#{카카오_로그인_연결}"></button>
+            </a>
         </th:block>
-
 
         <button type="submit" th:text="#{수정하기}"></button>
     </form>

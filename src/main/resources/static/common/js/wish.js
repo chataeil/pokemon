@@ -37,17 +37,12 @@ window.addEventListener("DOMContentLoaded", function() {
             (async() => {
                 try {
                     await ajaxLoad(apiUrl);
-                    let addClass= "";
-                    if (classList.contains("on")) { // 제거 처리
-                        addClass = icon.classList.contains("wish-GAME_POKEMON") ? "xi-star-o" : "xi-heart-o";
-                    } else { // 추가 처리
-                        addClass = icon.classList.contains("wish-GAME_POKEMON") ? "xi-star" : "xi-heart";
-                    }
 
-                    for (const cls of ['xi-star-o', 'xi-star', 'xi-heart', 'xi-heart-o']){
-                    icon.classList.remove(cls);
+                    if (classList.contains("on")) { // 제거 처리
+                        icon.className = "xi-heart-o";
+                    } else { // 추가 처리
+                        icon.className = "xi-heart";
                     }
-                    if (addClass) icon.classList.add(addClass);
 
                     classList.toggle("on");
 

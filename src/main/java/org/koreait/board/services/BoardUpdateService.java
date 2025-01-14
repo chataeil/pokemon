@@ -79,6 +79,7 @@ public class BoardUpdateService {
 
         // 비회원 게시글 인증 정보 삭제
         request.getSession().removeAttribute("board_" + seq);
+
         return data;
     }
 }

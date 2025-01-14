@@ -14,7 +14,7 @@ public class RequestBoard {
     private String mode;
 
     @NotBlank
-    private String bid; // 게시판 아이디.
+    private String bid; // 게시판 아이디
 
     @NotBlank
     private String gid;
@@ -34,9 +34,9 @@ public class RequestBoard {
 
     private String externalLink; // 외부링크
     private String youtubeUrl; // Youtube 주소
-    
+
     private String category; // 게시글 분류
-    
+
     private List<FileInfo> editorImages;
     private List<FileInfo> attachFiles;
 }

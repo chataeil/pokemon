@@ -264,38 +264,40 @@ public class BoardInfoService {
                     .fetchFirst();
 
             BoardData next = queryFactory.selectFrom(boardData)
-                    .where(boardData.seq.gt(seq))
-                    .orderBy(boardData.seq.asc())
-                    .fetchFirst();
+                            .where(boardData.seq.gt(seq))
+                            .orderBy(boardData.seq.asc())
+                            .fetchFirst();
 
             item.setPrev(prev);
             item.setNext(next);
         }
+
         /* listable, writable, editable, mine 처리 S */
+
         Board board = item.getBoard();
         configInfoService.addInfo(board);
 
         boolean listable = board.isListable();
 
-        boolean writable = board.isWriteable();
+        boolean writable = board.isWritable();
 
         Member member = item.getMember();
         Member loggedMember = memberUtil.getMember();
 
-
-        boolean editable = member == null || (memberUtil.isLogin() && loggedMember.getEmail().equals(member.getEmail())); // 비회원은 비밀번호 확인이 필요하므로 버튼 노출, 회원 게시글 로그인한 회원과 일치하면 버튼 노출
+        boolean editable = member == null || (memberUtil.isLogin() && loggedMember.getEmail().equals(member.getEmail())); // 비회원게시글은 비밀번호 확인이 필요하므로 버튼 노출, 회원게시글 로그인한 회원과 일치하면 버튼 노출
 
         boolean mine = request.getSession().getAttribute("board_" + item.getSeq()) != null
-                || (member != null && memberUtil.isLogin() && loggedMember.getEmail().equals(member.getEmail()));
+                        || (member != null && memberUtil.isLogin() && loggedMember.getEmail().equals(member.getEmail()));
 
         item.setListable(listable);
-        item.setWriteable(writable);
+        item.setWritable(writable);
         item.setEditable(editable);
         item.setMine(mine);
 
-        }// endif
-    private void addInfo(BoardData item) {
-        addInfo(item, false);
-     }
+        /* listable, writable, editable, mine 처리 E */
     }
 
+    private void addInfo(BoardData item) {
+        addInfo(item, false);
+    }
+}

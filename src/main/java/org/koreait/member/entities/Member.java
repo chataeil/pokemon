@@ -77,7 +77,7 @@ public class Member extends BaseEntity implements Serializable {
     private FileInfo profileImage;
 
     // 카카오 로그인 연동된 상태인지
-    public boolean isKakaoConnected(){
+    public boolean isKakaoConnected() {
         return socialChannel != null && socialChannel == socialChannel.KAKAO && StringUtils.hasText(socialToken);
     }
 }

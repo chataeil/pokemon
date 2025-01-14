@@ -24,8 +24,8 @@ public class MessageSendService {
 
     public Message process(RequestMessage form) {
 
-        String email = form.getEmail(); // RequestMessage에서 Email의 정보를 받아옴.
-        Member receiver = !form.isNotice() ? memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new) : null; // 메일 받는쪽 이메일이 없으면 레포지토리에서 이메일을 찾고 있으면 null값
+        String email = form.getEmail();
+        Member receiver = !form.isNotice() ? memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new) : null;
 
         Message message = Message.builder()
                 .gid(form.getGid())

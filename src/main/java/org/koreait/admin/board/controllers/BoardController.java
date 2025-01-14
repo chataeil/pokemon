@@ -33,7 +33,6 @@ public class BoardController implements SubMenus {
     private final BoardConfigInfoService configInfoService;
     private final HttpServletRequest request;
 
-
     @Override
     @ModelAttribute("menuCode")
     public String menuCode() {
@@ -160,7 +159,7 @@ public class BoardController implements SubMenus {
         } else if (mode.equals("posts")) {
             pageTitle = "게시글 관리";
         }
-
+        
         pageTitle += " - 게시판 관리";
 
         model.addAttribute("pageTitle", pageTitle);

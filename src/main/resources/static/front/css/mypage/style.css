@@ -31,20 +31,3 @@ main > aside > a + a {
     height: 300px;
     border: 2px solid #000;
 }
-/* 마이포켓몬 레이아웃 S */
-.bag {
-    display: grid;
-    grid-template-columns: repeat(2, 0fr);
-    justify-content: center;
-    width: 50%;
-    margin: 0 auto;
-}
-
-.poke {
-    width: 300px;
-    height: 300px;
-    border: 1px solid #000;
-    border-radius: 150px;
-    margin: 10px 10px;
-}
-/* 마이포켓몬 레이아웃 E */

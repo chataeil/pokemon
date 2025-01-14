@@ -34,7 +34,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @SessionAttributes({"requestAgree", "requestLogin", "authCodeVerified", "socialChannel", "socialToken"})
 public class MemberController {
-
+    
     private final Utils utils;
     private final JoinValidator joinValidator; // 회원 가입 검증
     private final MemberUpdateService updateService; // 회원 가입 처리
@@ -51,7 +51,7 @@ public class MemberController {
     public RequestLogin requestLogin() {
         return new RequestLogin();
     }
-
+    
     // 이메일 인증 여부
     @ModelAttribute("authCodeVerified")
     public boolean authCodeVerified() {
@@ -75,13 +75,12 @@ public class MemberController {
     }
 
     @GetMapping("/login")
-    public String login(@ModelAttribute RequestLogin form, Errors errors, Model model,@SessionAttribute(name="socialChannel", required = false) SocialChannel channel,
-                        HttpSession session) {
+    public String login(@ModelAttribute RequestLogin form, Errors errors, Model model, HttpSession session) {
         commonProcess("login", model); // 로그인 페이지 공통 처리
 
-//        session.setAttribute("socialChannel" ,SocialChannel.NONE);
-//        session.setAttribute("socialToken", null);
-        model.addAttribute("socialChannel" ,SocialChannel.NONE);
+        //session.setAttribute("socialChannel", SocialChannel.NONE);
+        //session.setAttribute("socialToken", null);
+        model.addAttribute("socialChannel", SocialChannel.NONE);
         model.addAttribute("socialToken", null);
 
         form.setKakaoLoginUrl(kakaoLoginService.getLoginUrl(form.getRedirectUrl()));
@@ -107,13 +106,8 @@ public class MemberController {
      * @return
      */
     @GetMapping("/agree")
-    public String joinAgree( Model model, HttpSession session) {
+    public String joinAgree(Model model) {
         commonProcess("agree", model);
-
-
-            session.removeAttribute("socialChannel");
-            session.removeAttribute("socialToken");
-
 
         return utils.tpl("member/agree");
     }
@@ -190,7 +184,7 @@ public class MemberController {
 
     /**
      * 공통 처리 부분
-     *
+     * 
      * @param mode
      * @param model
      */
@@ -230,7 +224,7 @@ public class MemberController {
 
         // front 스크립트
         model.addAttribute("addScript", addScript);
-
+        
         // 소셜 로그인 설정
         model.addAttribute("socialConfig", socialConfig);
     }

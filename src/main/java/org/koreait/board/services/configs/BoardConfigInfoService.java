@@ -121,14 +121,16 @@ public class BoardConfigInfoService {
 
             item.setCategories(categories);
         }
-        // listable, writalbe S
+
+        // listable, writable S
         Authority listAuthority = item.getListAuthority();
-        boolean listable = listAuthority== Authority.ALL|| (listAuthority == Authority.USER && memberUtil.isLogin()) || (listAuthority == Authority.ADMIN && memberUtil.isAdmin());
+        boolean listable = listAuthority == Authority.ALL || (listAuthority == Authority.USER && memberUtil.isLogin()) || (listAuthority == Authority.ADMIN && memberUtil.isAdmin());
 
         Authority writeAuthority = item.getWriteAuthority();
         boolean writable = writeAuthority == Authority.ALL || (writeAuthority == Authority.USER && memberUtil.isLogin()) || (writeAuthority == Authority.ADMIN && memberUtil.isAdmin());
+
         item.setListable(listable);
-        item.setWriteable(writable);
-        // listable, writalbe E
+        item.setWritable(writable);
+        // listable, writable E
     }
 }

@@ -1,6 +1,5 @@
 package org.koreait.board.repositories;
 
-
 import org.koreait.board.entities.BoardView;
 import org.koreait.board.entities.BoardViewId;
 import org.springframework.data.jpa.repository.JpaRepository;

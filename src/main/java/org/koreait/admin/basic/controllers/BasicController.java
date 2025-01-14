@@ -116,7 +116,7 @@ public class BasicController implements SubMenus {
     }
 
     @GetMapping("/social")
-    public String social(Model model){
+    public String social(Model model) {
         commonProcess("social", model);
 
         SocialConfig form = codeValueService.get("socialConfig", SocialConfig.class);
@@ -126,6 +126,7 @@ public class BasicController implements SubMenus {
 
         return "admin/basic/social";
     }
+
     @PostMapping("/social")
     public String socialPs(SocialConfig form, Model model) {
         commonProcess("social", model);
@@ -136,6 +137,7 @@ public class BasicController implements SubMenus {
 
         return "admin/basic/social";
     }
+
     /**
      * 기본설정 공통 처리 부분
      *
@@ -150,8 +152,8 @@ public class BasicController implements SubMenus {
             pageTitle = "사이트 기본정보";
         } else if (mode.equals("terms")) {
             pageTitle = "약관 관리";
-        } else if (mode.equals("social")){
-            pageTitle="소셜로그인";
+        } else if (mode.equals("social")) {
+            pageTitle = "소셜 로그인";
         }
 
         pageTitle += " - 기본설정";
