@@ -11,7 +11,18 @@
 <script th:fragment="image-item" type="text/html" id="tpl-image-item">
     <div class="image-item" id="file-[seq]">
         <i class="remove xi-close" data-seq="[seq]"></i>
+        <i class="insert-editor xi-upload" data-url="[fileUrl]"></i>
         <div class="inner show-image" style="background:url('[thumbUrl]') no-repeat center center;background-size: cover;" data-seq="[seq]"></div>
+    </div>
+</script>
+<script th:fragment="image-item2" type="text/html" id="tpl-image-item">
+    <div class="image-item[addClass]" id="file-[seq]">
+
+        <div class="inner show-image" style="background:url('[thumbUrl]') no-repeat center center;background-size: cover;" data-seq="[seq]"></div>
+        <div class="controls"></div>
+        <i class="remove xi-close" data-seq="[seq]"></i>
+        <i class="select-image xi -check" data-seq="[seq]"></i>
+        <i class="insert-editor xi-upload" data-url="[fileUrl]"></i>
     </div>
 </script>
 </html>
