@@ -80,10 +80,10 @@ public class MemberController {
 
         //session.setAttribute("socialChannel", SocialChannel.NONE);
         //session.setAttribute("socialToken", null);
-        model.addAttribute("socialChannel", SocialChannel.NONE);
-        model.addAttribute("socialToken", null);
+//        model.addAttribute("socialChannel", SocialChannel.NONE);
+//        model.addAttribute("socialToken", null);
 
-        form.setKakaoLoginUrl(kakaoLoginService.getLoginUrl(form.getRedirectUrl()));
+//        form.setKakaoLoginUrl(kakaoLoginService.getLoginUrl(form.getRedirectUrl()));
 
         if (form.getErrorCodes() != null) { // 검증 실패
             form.getErrorCodes().stream().map(s -> s.split("_"))
