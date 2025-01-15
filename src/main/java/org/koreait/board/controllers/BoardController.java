@@ -1,15 +1,21 @@
 package org.koreait.board.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.koreait.board.entities.Board;
 import org.koreait.board.entities.BoardData;
+import org.koreait.board.entities.CommentData;
 import org.koreait.board.exceptions.GuestPasswordCheckException;
 import org.koreait.board.services.*;
+import org.koreait.board.services.comment.CommentDeleteService;
+import org.koreait.board.services.comment.CommentInfoService;
+import org.koreait.board.services.comment.CommentUpdateService;
 import org.koreait.board.services.configs.BoardConfigInfoService;
 import org.koreait.board.validators.BoardValidator;
+import org.koreait.board.validators.CommentValidator;
 import org.koreait.file.constants.FileStatus;
 import org.koreait.file.services.FileInfoService;
 import org.koreait.global.annotations.ApplyErrorPage;
@@ -23,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
@@ -49,6 +56,12 @@ public class BoardController {
     private final BoardDeleteService boardDeleteService;
     private final BoardAuthService boardAuthService;
     private final CodeValueService codeValueService;
+    private final CommentValidator commentValidator;
+    private final CommentUpdateService commentUpdateService;
+    private final CommentInfoService commentInfoService;
+    private final CommentDeleteService commentDeleteService;
+    private final HttpServletRequest request;
+
 
     /**
      * 사용자별 공통 데이터
@@ -86,7 +99,7 @@ public class BoardController {
      * @return
      */
     @GetMapping("/view/{seq}")
-    public String view(@PathVariable("seq") Long seq, Model model, @ModelAttribute RequestComment form) {
+        public String view(@PathVariable("seq") Long seq, Model model, @ModelAttribute RequestComment form) {
         commonProcess(seq, "view", model);
 
         long viewCount = boardViewUpdateService.process(seq); // 조회수 업데이트
@@ -95,15 +108,30 @@ public class BoardController {
 
         Board board = data.getBoard();
         if (board.isListUnderView()) { // 보기페이지 하단에 게시글 목록 출력
-            ListData<BoardData> listData = boardInfoService.getList(board.getBid(), new BoardSearch());
+
+            BoardSearch search = new BoardSearch();
+            search.setPage(boardInfoService.getPage(board.getBid(), seq, board.getRowsPerPage()));
+
+            ListData<BoardData> listData = boardInfoService.getList(board.getBid(), search);
             model.addAttribute("items", listData.getItems());
             model.addAttribute("pagination", listData.getPagination());
         }
 
         // 댓글을 사용하는 경우
-        if (board.isUseComment() && memberUtil.isLogin()) {
-            form.setCommenter(memberUtil.getMember().getName());
+        if (board.isUseComment()) {
+            if (memberUtil.isLogin()) {
+                form.setCommenter(memberUtil.getMember().getName());
+            }
+
+            form.setMode("write");
+            form.setTarget("ifrmProcess");
+            form.setBoardDataSeq(seq);
+
+            List<CommentData> comments = commentInfoService.getList(seq); // 댓글 목록
+            model.addAttribute("comments", comments);
         }
+
+
 
         return utils.tpl("board/view");
     }
@@ -188,9 +216,90 @@ public class BoardController {
         commonProcess(seq, "delete", model);
         Board board = commonValue.getBoard();
 
+        boardValidator.checkDelete(seq); // 게시글에 댓글이 있으면 삭제 불가
+
         boardDeleteService.delete(seq);
 
         return "redirect:/board/list/" + board.getBid();
+    }
+
+    /**
+     * 댓글 등록/수정
+     *
+     * @param form
+     * @param errors
+     * @param model
+     * @return
+     */
+    @PostMapping("/comment")
+    public String comment(@Valid RequestComment form, Errors errors, Model model) {
+        String mode = form.getMode();
+        mode = StringUtils.hasText(mode) ? mode : "write";
+        if (mode.equals("edit")) {
+            commonProcess(form.getSeq(), "comment", model);
+        }
+
+        commentValidator.validate(form, errors);
+
+        if (errors.hasErrors()) {
+            if (!mode.equals("edit")) { // 댓글 등록시에는 alert 메세지로 검증 실패를 알린다.
+                FieldError err = errors.getFieldErrors().get(0);
+                String code = err.getCode();
+                String field = err.getField();
+                throw new AlertException(utils.getMessage(code + ".requestComment." + field));
+            }
+
+            return utils.tpl("board/comment"); // 수정
+        }
+
+        // 댓글 등록/수정 서비스
+        CommentData item = commentUpdateService.save(form);
+
+        String redirectUrl = String.format("/board/view/%d#comment-%d", form.getBoardDataSeq(), item.getSeq());
+        if (mode.equals("edit")) {
+            return "redirect:" + redirectUrl;
+        } else {
+
+            redirectUrl = request.getContextPath() + redirectUrl;
+
+            String script = String.format("parent.location.reload(); parent.addEventListener('DOMContentLoaded', function() { parent.location.replace('%s'); });", redirectUrl);
+            model.addAttribute("script", script);
+            return "common/_execute_script";
+        }
+    }
+
+    /**
+     * 댓글 수정
+     *
+     * @param seq
+     * @param model
+     * @return
+     */
+    @GetMapping("/comment/edit/{seq}")
+    public String commentEdit(@PathVariable("seq") Long seq, Model model) {
+        commonProcess(seq, "comment", model);
+
+        RequestComment form = commentInfoService.getForm(seq);
+
+        model.addAttribute("requestComment", form);
+
+        return utils.tpl("board/comment");
+    }
+
+    /**
+     * 댓글 삭제 처리
+     *
+     * @param seq
+     * @param model
+     * @return
+     */
+    @GetMapping("/comment/delete/{seq}")
+    public String commentDelete(@PathVariable("seq") Long seq, Model model) {
+        commonProcess(seq, "comment", model);
+
+        BoardData item = commentDeleteService.delete(seq);
+
+        return "redirect:/board/view/" + item.getSeq();
     }
 
     /**
@@ -221,14 +330,30 @@ public class BoardController {
             throw new AlertException(utils.getMessage("NotBlank.password"));
         }
 
+        /* 비회원 게시글 비밀번호 검증 S */
         Long seq = (Long)session.getAttribute("seq");
 
-       if (!boardValidator.checkGuestPassword(password, seq)) {
-           throw new AlertException(utils.getMessage("Mismatch.password"));
-       }
+        if (seq != null && seq > 0L) {
+            if (!boardValidator.checkGuestPassword(password, seq)) {
+                throw new AlertException(utils.getMessage("Mismatch.password"));
+            }
 
-        // 비회원 비밀번호 검증 성공시 세션에 board_게시글번호
-        session.setAttribute("board_" + seq, true);
+            // 비회원 비밀번호 검증 성공시 세션에 board_게시글번호
+            session.setAttribute("board_" + seq, true);
+        }
+        /* 비회원 게시글 비밀번호 검증 E */
+
+        /* 비회원 댓글 비밀번홀 검증 S */
+        Long cSeq = (Long)session.getAttribute("cSeq");
+        if (cSeq != null && cSeq > 0L) {
+            if (!commentValidator.checkGuestPassword(password, cSeq)) {
+                throw new AlertException(utils.getMessage("Mismatch.password"));
+            }
+
+            // 비회원 댓글 비밀번호 검증 성공 comment_댓글번호
+            session.setAttribute("comment_" + cSeq, true);
+        }
+        /* 비회원 댓글 비밀번홀 검증 E */
 
         // 비회원 비밀번호 인증 완료된 경우 새로 고침
         model.addAttribute("script", "parent.location.reload();");
@@ -240,7 +365,7 @@ public class BoardController {
     private void commonProcess(String bid, String mode, Model model) {
 
         // 권한 체크
-        if (!List.of("edit", "delete").contains(mode)) {
+        if (!List.of("edit", "delete", "comment").contains(mode)) {
             boardAuthService.check(mode, bid);
         }
 
@@ -292,7 +417,15 @@ public class BoardController {
     // 게시글 보기, 게시글 수정
     private void commonProcess(Long seq, String mode, Model model) {
 
-        BoardData item = boardInfoService.get(seq);
+        BoardData item = null;
+        CommentData comment = null;
+        if (mode.equals("comment")) { // 댓글 수정, 삭제
+            comment = commentInfoService.get(seq);
+            item = comment.getData();
+        } else {
+            item = boardInfoService.get(seq);
+        }
+
         Board board = item.getBoard();
 
         // 게시판 권한 체크
@@ -306,6 +439,7 @@ public class BoardController {
         CommonValue commonValue = commonValue();
         commonValue.setBoard(board);
         commonValue.setData(item);
+        commonValue.setComment(comment);
 
         model.addAttribute("commonValue", commonValue);
         model.addAttribute("pageTitle", pageTitle);
@@ -316,5 +450,6 @@ public class BoardController {
     static class CommonValue implements Serializable {
         private Board board;
         private BoardData data;
+        private CommentData comment;
     }
 }

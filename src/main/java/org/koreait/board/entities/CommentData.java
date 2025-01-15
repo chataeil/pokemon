@@ -5,9 +5,12 @@ import lombok.Data;
 import org.koreait.global.entities.BaseEntity;
 import org.koreait.member.entities.Member;
 
+import java.io.Serializable;
+
 @Data
 @Entity
-public class CommentData extends BaseEntity {
+@Table(indexes = @Index(name = "idx_comment_data_created_at", columnList = "createdAt ASC"))
+public class CommentData extends BaseEntity implements Serializable {
     @Id @GeneratedValue
     private Long seq;
 
@@ -32,4 +35,7 @@ public class CommentData extends BaseEntity {
 
     @Column(length=150)
     private String userAgent;
+
+    @Transient
+    private boolean editable; // 댓글 수정, 삭제 가능 여부
 }
