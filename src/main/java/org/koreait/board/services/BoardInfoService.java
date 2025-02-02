@@ -57,8 +57,8 @@ public class BoardInfoService {
         return item;
     }
 
-    public RequestBoard getForm(Long seq) {
-        return getForm(get(seq));
+    public RequestBoard getForm(Long seq) { // seq값이 들어오면
+        return getForm(get(seq)); // seq정보 받아와서 getForm에 넘겨줌
     }
 
     /**
@@ -67,10 +67,10 @@ public class BoardInfoService {
      * @param item
      * @return
      */
-    public RequestBoard getForm(BoardData item) {
-        RequestBoard form = modelMapper.map(item, RequestBoard.class);
-        form.setMode("edit");
-        form.setBid(item.getBoard().getBid());
+    public RequestBoard getForm(BoardData item) { // boardData가 들어오면
+        RequestBoard form = modelMapper.map(item, RequestBoard.class); // 검색 조건을 item에서 requestboard로 변환
+        form.setMode("edit"); // url을 edit으로 셋
+        form.setBid(item.getBoard().getBid()); // 게시글에서의 게시판 정보와 bid를 가져와서 bid를 셋해줌
 
         return form;
     }
@@ -99,13 +99,13 @@ public class BoardInfoService {
 
         // 게시판 아이디
         if (bids != null && !bids.isEmpty()) {
-            andBuilder.and(boardData.board.bid.in(bids));
+            andBuilder.and(boardData.board.bid.in(bids)); //bid 값이 bids 리스트에 포함되어 있는 데이터를 조회하는 조건을 추가
         }
 
         // 분류 검색
         List<String> categories = search.getCategory();
         if (categories != null && !categories.isEmpty()) {
-            andBuilder.and(boardData.category.in(categories));
+            andBuilder.and(boardData.category.in(categories)); // boardData의 category가 categories 목록에 포함되는지 확인하는 조건
         }
 
         /**
@@ -135,13 +135,13 @@ public class BoardInfoService {
                 condition = content;
             } else if (sopt.equals("SUBJECT_CONTENT")) { // 제목 + 내용
                 condition = subject.concat(content);
-            } else if (sopt.equals("POSTER")){
+            } else if (sopt.equals("POSTER")){ // 작성자
                 condition = poster;
             } else { // 통합 검색
                 condition = subject.concat(content).concat(poster);
             }
 
-            andBuilder.and(condition.contains(skey));
+            andBuilder.and(condition.contains(skey)); // 검색 조건에 컨디션에 skey가 포함
         }
 
         // 회원 이메일

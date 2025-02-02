@@ -15,7 +15,7 @@ import java.util.List;
         @Index(name="idx_bd_created_at", columnList = "createdAt DESC"),
         @Index(name="idx_bd_notice_created_at", columnList = "notice DESC, createdAt DESC")
 })
-public class BoardData extends BaseEntity implements Serializable {
+public class BoardData extends BaseEntity implements Serializable { // 개별 게시글에 대한 정보를 나타내는 클래스.
     @Id @GeneratedValue
     private Long seq;
 

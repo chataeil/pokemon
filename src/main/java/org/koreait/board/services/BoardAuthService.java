@@ -52,11 +52,11 @@ public class BoardAuthService {
         Board board = null;
         CommentData comment = null;
         if (mode.equals("comment")) { // 댓글 수정, 삭제
-            comment = commentInfoService.get(seq);
-            BoardData data = comment.getData();
-            board = data.getBoard();
+            comment = commentInfoService.get(seq); // seq를 기반으로 댓글 데이터를 가져옴
+            BoardData data = comment.getData();  // 댓글이 속한 게시글 데이터
+            board = data.getBoard();  // 게시글 정보를 가져옴
         } else {
-            board = configInfoService.get(bid);
+            board = configInfoService.get(bid); // 게시판 정보를 가져옴
         }
 
         // 게시판 사용 여부 체크
@@ -69,8 +69,8 @@ public class BoardAuthService {
          *      - edit, view  / seq
          */
         // 글쓰기, 글 목록 권한 체크
-        Authority authority = null;
-        boolean isVerified = true;
+        Authority authority = null;  // 기본값 null
+        boolean isVerified = true; // 기본값 true
         Member member = memberUtil.getMember(); // 현재 로그인한 회원 정보
         if (List.of("write", "list").contains(mode)) {
             authority = mode.equals("list") ? board.getListAuthority() : board.getWriteAuthority();
@@ -83,16 +83,16 @@ public class BoardAuthService {
              *
              * 2. 비회원 게시글인 경우 / 비회원 비밀번호 확인이 완료된 경우 삭제 가능
              */
-            BoardData item = infoService.get(seq);
-            Member poster = item.getMember();
+            BoardData item = infoService.get(seq);// 게시글 데이터 가져오기
+            Member poster = item.getMember();// 게시글 작성자 정보 가져오기
 
             if (poster == null) { // 비회원 게시글
                 /**
                  * 비회원 게시글이 인증된 경우 - 세션 키 - "board_게시글번호"가 존재
                  * 인증이 되지 않은 경우 GuestPasswordCheckException을 발생 시킨다 -> 비번 확인 절차
                  */
-                if (session.getAttribute("board_" + seq) == null) {
-                    session.setAttribute("seq", seq);
+                if (session.getAttribute("board_" + seq) == null) { // 세션에 저장된 board_ + seq가 null값이면
+                    session.setAttribute("seq", seq); // 현재 인증이 필요한 댓글 번호를 세션에 저장
                     throw new GuestPasswordCheckException();
                 }
 
@@ -100,13 +100,13 @@ public class BoardAuthService {
                 isVerified = false;
             }
         } else if (mode.equals("comment")) { // 댓글 수정 삭제
-            Member commenter = comment.getMember();
+            Member commenter = comment.getMember(); // 댓글단 맴버 정보 조회
             if (commenter == null) { // 비회원으로 작성한 댓글
                 if (session.getAttribute("comment_" + seq) == null) { // 댓글 비회원 인증 X
-                    session.setAttribute("cSeq", seq);
+                    session.setAttribute("cSeq", seq); // 인증이 필요한 비회원 번호를 세션에 저장
                     throw new GuestPasswordCheckException();
                 }
-            } else if (!memberUtil.isLogin() || !commenter.getEmail().equals(member.getEmail())) { // 회원이 작성한 댓글
+            } else if (!memberUtil.isLogin() || !commenter.getEmail().equals(member.getEmail())) { // 로그인 안했거나 이메일이 사용자와 다른 경우
                 isVerified = false;
             }
         }
@@ -115,8 +115,8 @@ public class BoardAuthService {
             isVerified = false;
         }
 
-        if (!isVerified) {
-            throw new AlertBackException(utils.getMessage("UnAuthorized"), HttpStatus.UNAUTHORIZED);
+        if (!isVerified) { // 만약 isVerified가 false면
+            throw new AlertBackException(utils.getMessage("UnAuthorized"), HttpStatus.UNAUTHORIZED); // 권한 없음 출력
         }
     }
 
@@ -125,15 +125,15 @@ public class BoardAuthService {
     }
 
     public void check(String mode, Long seq) {
-        BoardData item = null;
+        BoardData item = null; // 게시판 데이터는 기본값이 null
         if (mode.equals("comment")) {
-            CommentData comment = commentInfoService.get(seq);
-            item = comment.getData();
+            CommentData comment = commentInfoService.get(seq); // 댓글의 seq 받아옴
+            item = comment.getData(); // 댓글에서 게시판 데이터를 받아옴
         } else {
-            item = infoService.get(seq);
+            item = infoService.get(seq); // 인포 서비스에서 seq를 받아옴
         }
 
-        Board board = item.getBoard();
-        check(mode, board.getBid(), seq);
+        Board board = item.getBoard(); // 게시판 정보를 받아옴
+        check(mode, board.getBid(), seq); // 들어온 url 게시판의 bid 정보, seq 확인
     }
 }

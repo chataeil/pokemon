@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Board extends BaseMemberEntity implements Serializable {
+public class Board extends BaseMemberEntity implements Serializable { //게시판에 대한 정보를 나타내는 클래스.
     @Id
     @Column(length=30)
     private String bid;
