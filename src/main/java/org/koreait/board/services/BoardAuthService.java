@@ -49,8 +49,8 @@ public class BoardAuthService {
             return;
         }
 
-        Board board = null;
-        CommentData comment = null;
+        Board board = null; //기본값은 널
+        CommentData comment = null; // 기본값은 널
         if (mode.equals("comment")) { // 댓글 수정, 삭제
             comment = commentInfoService.get(seq); // seq를 기반으로 댓글 데이터를 가져옴
             BoardData data = comment.getData();  // 댓글이 속한 게시글 데이터
