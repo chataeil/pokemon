@@ -12,7 +12,6 @@ import org.koreait.member.entities.Member;
 import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.MemberInfoService;
 import org.koreait.member.services.MemberUpdateService;
-import org.koreait.member.social.services.KakaoLoginService;
 import org.koreait.mypage.validators.ProfileValidator;
 import org.koreait.pokemon.controllers.PokemonSearch;
 import org.koreait.pokemon.entities.Pokemon;
@@ -44,7 +43,6 @@ public class MypageController {
     private final ProfileValidator profileValidator;
     private final MemberInfoService infoService;
     private final PokemonInfoService pokemonInfoService;
-    private final KakaoLoginService kakaoLoginService;
 
     @ModelAttribute("profile")
     public Member getMember() {
@@ -68,9 +66,6 @@ public class MypageController {
         if (StringUtils.hasText(optionalTerms)) {
             form.setOptionalTerms(Arrays.stream(optionalTerms.split("\\|\\|")).toList());
         }
-
-//        form.setKakaoLoginConnectUrl(kakaoLoginService.getLoginUrl("connect"));
-//        form.setKakaoLoginDisconnectUrl(kakaoLoginService.getLoginUrl("disconnect"));
 
         model.addAttribute("requestProfile", form);
 
@@ -117,6 +112,11 @@ public class MypageController {
 
         mode = Objects.requireNonNullElse(mode, WishType.POKEMON);
         if (mode == WishType.BOARD) { // 게시글 찜하기 목록
+
+        } else if (mode == WishType.GAME_POKEMON) { // 게임용 포켓몬 선택 목록
+
+            List<Pokemon> items = pokemonInfoService.getMyGamePokemons();
+            model.addAttribute("items", items);
 
         } else { // 포켓몬 찜하기 목록
             PokemonSearch pSearch = modelMapper.map(search, PokemonSearch.class);

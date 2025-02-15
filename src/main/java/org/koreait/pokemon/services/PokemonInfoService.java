@@ -1,3 +1,4 @@
+
 package org.koreait.pokemon.services;
 
 import com.querydsl.core.BooleanBuilder;
@@ -95,6 +96,18 @@ public class PokemonInfoService {
         return getList(search);
     }
 
+    public List<Pokemon> getMyGamePokemons() {
+        List<Long> seq = wishService.getMyWish(WishType.GAME_POKEMON);
+        if (seq == null || seq.isEmpty()) {
+            return List.of();
+        }
+        PokemonSearch search = new PokemonSearch();
+        search.setSeq(seq);
+
+        ListData<Pokemon> data = getList(search);
+        return data.getItems();
+    }
+
     /**
      * 포켓몬 단일 조회
      *
@@ -168,7 +181,7 @@ public class PokemonInfoService {
         QPokemon pokemon = QPokemon.pokemon;
 
         return queryFactory.select(pokemon.seq.max())
-                    .from(pokemon)
-                    .fetchFirst();
+                .from(pokemon)
+                .fetchFirst();
     }
 }
